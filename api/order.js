@@ -71,7 +71,13 @@ module.exports = async (req, res) => {
 
     if (!tgData.ok) {
       console.error('Telegram API error:', tgData);
-      res.status(502).json({ error: 'Failed to send notification' });
+      res.status(502).json({
+        error: 'Failed to send notification',
+        // Temporary debug detail so the exact Telegram rejection reason is
+        // visible in the browser's Network tab — remove once this is
+        // working reliably.
+        telegram_description: tgData.description || null,
+      });
       return;
     }
 
