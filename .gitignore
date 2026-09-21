@@ -1,0 +1,21 @@
+# Secrets — никогда не коммить реальные токены/ключи
+.env
+.env.local
+.env.*.local
+
+# Vercel CLI (создаётся локально при `vercel dev` / `vercel link`)
+.vercel
+
+# Node.js (на случай, если позже добавишь зависимости)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Редакторы
+.idea/
+*.swp

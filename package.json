@@ -1,0 +1,6 @@
+{
+  "name": "mesir-perfume-site",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MESIR Perfume & Home Fragrance — static site with a Vercel serverless function for order requests via Telegram."
+}

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MESIR — Perfume &amp; Home Fragrance</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrapper">
+
+<!-- ============ HEADER ============ -->
+<header id="site-header">
+  <div class="gold-topline"></div>
+  <div class="header-inner">
+    <a href="index.html" class="logo-link">
+      <img src="assets/logo.png" alt="MESIR Perfume & Home Fragrance" class="logo-img">
+    </a>
+
+    <nav class="main-nav">
+      <a href="#catalog" class="nav-link" data-i18n="nav_catalog">Catalog</a>
+      <a href="about.html" class="nav-link" data-i18n="nav_about">About</a>
+      <a href="contact.html" class="nav-link" data-i18n="nav_contact">Contact</a>
+    </nav>
+
+    <div class="header-icons">
+      <div class="lang-switch">
+        <button class="lang-btn" data-lang="en" type="button">EN</button>
+        <button class="lang-btn" data-lang="ru" type="button">RU</button>
+      </div>
+
+      <button id="search-toggle" class="icon-btn" data-i18n-aria="aria_search" aria-label="Search">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path>
+        </svg>
+      </button>
+
+      <button id="fav-btn" class="icon-btn" data-i18n-aria="aria_favorites" aria-label="Favorites">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+        </svg>
+        <span id="fav-count" class="badge hidden">0</span>
+      </button>
+
+      <button id="cart-btn" class="icon-btn" data-i18n-aria="aria_cart" aria-label="Cart">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        <span id="cart-count" class="badge hidden">0</span>
+      </button>
+
+      <button id="menu-toggle" class="icon-btn mobile-only" data-i18n-aria="aria_menu" aria-label="Menu">
+        <svg id="menu-icon-open" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+        <svg id="menu-icon-close" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24" style="display:none;">
+          <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search bar -->
+  <div id="search-bar" class="search-bar hidden">
+    <div class="search-inner">
+      <input type="text" id="search-input" data-i18n-placeholder="search_placeholder" placeholder="Search perfumes, brands..." class="search-input">
+      <svg class="search-icon" width="16" height="16" fill="none" stroke="#E29D30" stroke-width="1.5" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.35-4.35"></path>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <nav id="mobile-menu" class="mobile-menu hidden">
+    <a href="#catalog" class="mobile-nav-link" data-i18n="nav_catalog">Catalog</a>
+    <a href="about.html" class="mobile-nav-link" data-i18n="nav_about">About</a>
+    <a href="contact.html" class="mobile-nav-link" data-i18n="nav_contact">Contact</a>
+  </nav>
+</header>
+
+<main>
+  <!-- ============ HERO ============ -->
+  <section id="hero">
+    <div class="hero-pattern"></div>
+    <div class="hero-arc">
+      <svg viewBox="0 0 600 900" fill="none" width="100%" height="100%">
+        <circle cx="600" cy="450" r="500" stroke="#E29D30" stroke-width="1"></circle>
+        <circle cx="600" cy="450" r="380" stroke="#E29D30" stroke-width="0.5"></circle>
+        <circle cx="600" cy="450" r="260" stroke="#E29D30" stroke-width="0.5"></circle>
+      </svg>
+    </div>
+
+    <div class="hero-inner">
+      <div class="hero-grid">
+        <!-- Text -->
+        <div id="hero-text" class="hero-text">
+          <div class="hero-ornament">
+            <div class="ornament-line-short"></div>
+            <span id="hero-brand" class="hero-brand-label">MESIR</span>
+            <div class="ornament-line-short"></div>
+          </div>
+
+          <div>
+            <h1 id="hero-name" class="hero-name">OUD ROYAL</h1>
+            <p id="hero-tagline" class="hero-tagline">An Ode to Ancient Luxury</p>
+          </div>
+
+          <p id="hero-description" class="hero-description">An elegant composition built around rich oud, warm amber and subtle oriental spices. A fragrance that commands presence.</p>
+
+          <div id="hero-notes" class="hero-notes"></div>
+
+          <div class="hero-cta-row">
+            <span id="hero-price" class="hero-price">$380</span>
+            <button class="btn-outline-gold" data-i18n="hero_discover_btn">Discover</button>
+          </div>
+        </div>
+
+        <!-- Image -->
+        <div id="hero-image-wrap" class="hero-image-wrap">
+          <div class="hero-glow"></div>
+          <div class="hero-image-frame">
+            <div class="corner-ornament tl"></div>
+            <div class="corner-ornament tr"></div>
+            <div class="corner-ornament bl"></div>
+            <div class="corner-ornament br"></div>
+            <img id="hero-image" class="hero-image" src="" alt="">
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls -->
+      <div class="hero-controls">
+        <button id="hero-prev" class="slide-nav-btn" aria-label="Previous">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </button>
+
+        <span class="hero-counter">
+          <span id="hero-current" class="hero-counter-current">01</span>
+          <span class="hero-counter-sep">/</span>
+          <span id="hero-total">05</span>
+        </span>
+
+        <div id="hero-dots" class="hero-dots"></div>
+
+        <button id="hero-next" class="slide-nav-btn" aria-label="Next">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="hero-bottom-fade"></div>
+  </section>
+
+  <!-- ============ CATALOG ============ -->
+  <section id="catalog">
+    <div class="section-header">
+      <div class="section-header-row">
+        <div class="ornament-line-fade-right"></div>
+        <span class="section-eyebrow" data-i18n="catalog_eyebrow">Collection</span>
+        <div class="ornament-line-fade-left"></div>
+      </div>
+      <h2 class="section-title" data-i18n="catalog_title">The Catalog</h2>
+      <p class="section-subtitle" data-i18n="catalog_subtitle">Curated fragrances from the world's finest houses</p>
+    </div>
+
+    <div class="catalog-container">
+      <!-- Mobile filter toggle -->
+      <div class="mobile-filter-bar">
+        <button id="mobile-filters-toggle" class="filter-toggle-btn">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+            <line x1="4" y1="6" x2="20" y2="6"></line><line x1="8" y1="12" x2="16" y2="12"></line><line x1="11" y1="18" x2="13" y2="18"></line>
+          </svg>
+          <span data-i18n="filters_btn">Filters</span>
+        </button>
+        <span id="mobile-item-count" class="item-count-label"></span>
+      </div>
+
+      <!-- Mobile filter drawer -->
+      <div id="mobile-filter-drawer" class="mobile-filter-drawer hidden">
+        <div class="sidebar-content" data-sidebar-target="mobile"></div>
+      </div>
+
+      <div class="catalog-body">
+        <!-- Desktop sidebar -->
+        <aside class="desktop-sidebar">
+          <div class="sidebar-sticky">
+            <div class="sidebar-content" data-sidebar-target="desktop"></div>
+          </div>
+        </aside>
+
+        <!-- Product grid -->
+        <div class="catalog-main">
+          <div class="desktop-item-count-row">
+            <span id="desktop-item-count" class="item-count-label"></span>
+          </div>
+
+          <div id="catalog-results-area" class="catalog-results-area">
+            <div id="product-grid" class="product-grid"></div>
+
+            <div id="no-results" class="no-results hidden">
+              <p class="no-results-text" data-i18n="no_results_title">No fragrances found</p>
+              <button id="no-results-clear" class="no-results-clear-btn" data-i18n="no_results_clear">Clear filters</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer id="site-footer">
+  <div class="gold-topline-shimmer"></div>
+
+  <div class="footer-ornament-row">
+    <div class="ornament-line-short-wide"></div>
+    <div class="ornament-diamond"></div>
+    <div class="ornament-line-tiny"></div>
+    <div class="ornament-diamond"></div>
+    <div class="ornament-line-tiny"></div>
+    <div class="ornament-diamond"></div>
+    <div class="ornament-line-short-wide reverse"></div>
+  </div>
+
+  <div class="footer-container">
+    <div class="footer-grid">
+      <div class="footer-brand-col">
+        <img src="assets/logo.png" alt="MESIR" class="footer-logo">
+        <p class="footer-brand-text" data-i18n="footer_brand_text">A curated house of exceptional perfumery and home fragrance, bridging the worlds of European luxury and Eastern heritage.</p>
+        <div class="social-row">
+          <a href="#" class="social-btn" aria-label="Instagram">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="Facebook">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+            </svg>
+          </a>
+          <a href="#" class="social-btn" aria-label="Twitter">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+              <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title" data-i18n="footer_nav_title">Navigation</h4>
+        <div class="footer-col-underline"></div>
+        <ul class="footer-link-list">
+          <li><a href="#catalog" class="footer-link" data-i18n="nav_catalog">Catalog</a></li>
+          <li><a href="about.html" class="footer-link" data-i18n="nav_about">About</a></li>
+          <li><a href="contact.html" class="footer-link" data-i18n="nav_contact">Contact</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title" data-i18n="footer_customer_title">Customer</h4>
+        <div class="footer-col-underline"></div>
+        <ul class="footer-link-list">
+          <li><a href="#" class="footer-link" data-i18n="footer_shipping">Shipping</a></li>
+          <li><a href="#" class="footer-link" data-i18n="footer_returns">Returns</a></li>
+          <li><a href="#" class="footer-link" data-i18n="footer_faq">FAQ</a></li>
+          <li><a href="#" class="footer-link" data-i18n="footer_privacy">Privacy Policy</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4 class="footer-col-title" data-i18n="footer_contact_title">Contact</h4>
+        <div class="footer-col-underline"></div>
+        <ul class="footer-contact-list">
+          <li class="footer-contact-item">
+            <svg width="12" height="12" fill="none" stroke="rgba(226,157,48,0.6)" stroke-width="1.5" viewBox="0 0 24 24">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <span>hello@mesirfragrance.com</span>
+          </li>
+          <li class="footer-contact-item">
+            <svg width="12" height="12" fill="none" stroke="rgba(226,157,48,0.6)" stroke-width="1.5" viewBox="0 0 24 24">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path>
+            </svg>
+            <span>+1 (800) 637-4700</span>
+          </li>
+          <li class="footer-contact-item">
+            <svg width="12" height="12" fill="none" stroke="rgba(226,157,48,0.6)" stroke-width="1.5" viewBox="0 0 24 24">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>
+            </svg>
+            <span>14 Rue du Faubourg,<br>Paris, France 75008</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <div class="footer-bottom-inner">
+      <p class="footer-copyright" data-i18n="footer_copyright">© 2026 MESIR Perfume &amp; Home Fragrance. All Rights Reserved.</p>
+      <div class="footer-dots">
+        <div class="footer-dot"></div>
+        <div class="footer-dot"></div>
+        <div class="footer-dot"></div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</div> <!-- /.wrapper -->
+
+<!-- ============ CART SIDEBAR ============ -->
+<div id="cart-overlay" class="cart-overlay hidden">
+  <div id="cart-backdrop" class="cart-backdrop"></div>
+  <div class="cart-panel">
+    <div class="cart-header">
+      <h2 class="cart-title" data-i18n="cart_title">Your Cart</h2>
+      <button id="cart-close" class="cart-close-btn" aria-label="Close cart">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div id="cart-items" class="cart-items"></div>
+
+    <div id="cart-footer" class="cart-footer hidden">
+      <div class="cart-total-row">
+        <span data-i18n="cart_total">Total</span>
+        <span id="cart-total">$0</span>
+      </div>
+      <button id="checkout-btn" class="checkout-btn" data-i18n="checkout_btn">Checkout</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FAVORITES SIDEBAR ============ -->
+<div id="fav-overlay" class="cart-overlay hidden">
+  <div id="fav-backdrop" class="cart-backdrop"></div>
+  <div class="cart-panel">
+    <div class="cart-header">
+      <h2 class="cart-title" data-i18n="fav_title">Your Favorites</h2>
+      <button id="fav-close" class="cart-close-btn" aria-label="Close favorites">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div id="fav-items" class="cart-items"></div>
+  </div>
+</div>
+
+<!-- ============ ORDER REQUEST MODAL ============ -->
+<div id="order-overlay" class="cart-overlay hidden">
+  <div id="order-backdrop" class="cart-backdrop"></div>
+  <div class="cart-panel">
+    <div class="cart-header">
+      <h2 class="cart-title" data-i18n="order_modal_title">Send Request</h2>
+      <button id="order-close" class="cart-close-btn" aria-label="Close">
+        <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+          <line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <form id="order-form" class="order-form">
+      <div id="order-summary" class="order-summary"></div>
+
+      <div class="form-field">
+        <label class="form-label" for="order-name" data-i18n="order_name_label">Full Name</label>
+        <input class="form-input" type="text" id="order-name" name="name" data-i18n-placeholder="order_name_placeholder" placeholder="Jane Doe" required>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="order-telegram" data-i18n="order_telegram_label">Telegram</label>
+        <input class="form-input" type="text" id="order-telegram" name="telegram" data-i18n-placeholder="order_telegram_placeholder" placeholder="@username" required>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label" for="order-phone" data-i18n="order_phone_label">Phone</label>
+        <input class="form-input" type="tel" id="order-phone" name="phone" data-i18n-placeholder="order_phone_placeholder" placeholder="+1 234 567 8900" required>
+      </div>
+
+      <button type="submit" id="order-submit-btn" class="form-submit-btn" data-i18n="order_submit_btn">Submit Request</button>
+    </form>
+    <p id="order-success-note" class="form-note hidden" data-i18n="order_success_note">Thank you! We've received your request and will contact you on Telegram or by phone shortly.</p>
+    <p id="order-error-note" class="form-note-error hidden" data-i18n="order_error_note">Something went wrong. Please try again, or message us directly on Telegram.</p>
+  </div>
+</div>
+
+<script src="i18n.js"></script>
+<script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
