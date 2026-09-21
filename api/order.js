@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
     const esc = (s) => String(s).replace(/([_*\[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
 
     const itemsList = items
-      .map((i) => `• ${esc(i.brand)} ${esc(i.name)} (${esc(i.size)}) — $${esc(i.price)}`)
+      .map((i) => `• ${esc(i.brand)} ${esc(i.name)} \\(${esc(i.size)}\\) — $${esc(i.price)}`)
       .join('\n');
 
     const text =
