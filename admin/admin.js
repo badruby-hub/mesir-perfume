@@ -88,7 +88,7 @@ logoutBtn.addEventListener('click', async () => {
     if (!confirm('Есть неопубликованные изменения — они будут потеряны. Выйти всё равно?')) return;
   }
   await fetch('/api/admin/logout', { method: 'POST' });
-  location.reload();
+  location.href = '/';
 });
 
 // =======================================================

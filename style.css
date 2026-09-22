@@ -971,6 +971,69 @@ input[type="range"]::-moz-range-thumb {
   color: #E29D30;
 }
 
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 48px;
+}
+.pagination-numbers {
+  display: flex;
+  gap: 6px;
+}
+.pagination-btn {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(226,157,48,0.3);
+  color: rgba(245,240,232,0.6);
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 13px;
+  transition: all 0.2s ease;
+  background: transparent;
+}
+.pagination-btn:hover {
+  border-color: #E29D30;
+  color: #E29D30;
+}
+.pagination-btn.active {
+  background: #E29D30;
+  color: #390000;
+  border-color: #E29D30;
+}
+.pagination-ellipsis {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(245,240,232,0.35);
+  font-size: 13px;
+}
+.pagination-arrow {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(226,157,48,0.3);
+  color: #E29D30;
+  transition: all 0.2s ease;
+  background: transparent;
+}
+.pagination-arrow:hover {
+  background: rgba(226,157,48,0.1);
+}
+.pagination-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  background: transparent;
+}
+
 /* Product card */
 .product-card {
   position: relative;

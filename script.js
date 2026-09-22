@@ -34,6 +34,7 @@ const state = {
   hoveredProductId: null,
   heroCurrent: 0,
   heroTransitioning: false,
+  currentPage: 1,
 };
 
 function persistCart() {
@@ -110,6 +111,7 @@ if (menuToggle && mobileMenu) {
 if (searchInput) {
   searchInput.addEventListener('input', e => {
     state.searchQuery = e.target.value.trim().toLowerCase();
+    state.currentPage = 1;
     if (document.getElementById('product-grid') && window.renderProductGrid) {
       window.renderProductGrid();
     }
@@ -231,6 +233,11 @@ if (productGrid) {
   const mobileItemCount = document.getElementById('mobile-item-count');
   const mobileFiltersToggle = document.getElementById('mobile-filters-toggle');
   const mobileFilterDrawer = document.getElementById('mobile-filter-drawer');
+  const paginationEl = document.getElementById('pagination');
+  const paginationNumbers = document.getElementById('pagination-numbers');
+  const paginationPrevBtn = document.getElementById('pagination-prev');
+  const paginationNextBtn = document.getElementById('pagination-next');
+  const PRODUCTS_PER_PAGE = 9;
 
   let mobileFiltersOpen = false;
   if (mobileFiltersToggle && mobileFilterDrawer) {
@@ -385,6 +392,7 @@ if (productGrid) {
       const val = Math.min(+e.target.value, state.filters.priceRange[1] - 10);
       e.target.value = val;
       state.filters.priceRange[0] = val;
+      state.currentPage = 1;
       syncPriceUI();
       renderProductGridInternal();
     });
@@ -393,6 +401,7 @@ if (productGrid) {
       const val = Math.max(+e.target.value, state.filters.priceRange[0] + 10);
       e.target.value = val;
       state.filters.priceRange[1] = val;
+      state.currentPage = 1;
       syncPriceUI();
       renderProductGridInternal();
     });
@@ -456,6 +465,7 @@ if (productGrid) {
       row.appendChild(label);
       row.addEventListener('click', () => {
         state.filters.availability = opt.key;
+        state.currentPage = 1;
         renderSidebars();
         renderProductGridInternal();
       });
@@ -471,6 +481,7 @@ if (productGrid) {
     const arr = state.filters.brands;
     const idx = arr.indexOf(b);
     if (idx > -1) arr.splice(idx, 1); else arr.push(b);
+    state.currentPage = 1;
     renderSidebars();
     renderProductGridInternal();
   }
@@ -479,6 +490,7 @@ if (productGrid) {
     const arr = state.filters.sizes;
     const idx = arr.indexOf(s);
     if (idx > -1) arr.splice(idx, 1); else arr.push(s);
+    state.currentPage = 1;
     renderSidebars();
     renderProductGridInternal();
   }
@@ -487,11 +499,13 @@ if (productGrid) {
     const arr = state.filters.countries;
     const idx = arr.indexOf(c);
     if (idx > -1) arr.splice(idx, 1); else arr.push(c);
+    state.currentPage = 1;
     renderSidebars();
     renderProductGridInternal();
   }
 
   function clearFilters() {
+    state.currentPage = 1;
     state.filters.brands = [];
     state.filters.sizes = [];
     state.filters.countries = [];
@@ -625,6 +639,15 @@ if (productGrid) {
 
   renderProductGridInternal = function renderProductGridInternal() {
     const filtered = getFilteredProducts();
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PRODUCTS_PER_PAGE));
+
+    // If a filter change shrank the results below the page we were on,
+    // fall back to the last valid page instead of showing an empty grid.
+    if (state.currentPage > totalPages) state.currentPage = totalPages;
+    if (state.currentPage < 1) state.currentPage = 1;
+
+    const startIdx = (state.currentPage - 1) * PRODUCTS_PER_PAGE;
+    const pageItems = filtered.slice(startIdx, startIdx + PRODUCTS_PER_PAGE);
 
     productGrid.innerHTML = '';
     if (filtered.length === 0) {
@@ -633,12 +656,80 @@ if (productGrid) {
     } else {
       productGrid.classList.remove('hidden');
       if (noResultsEl) noResultsEl.classList.add('hidden');
-      filtered.forEach(p => productGrid.appendChild(buildProductCard(p)));
+      pageItems.forEach(p => productGrid.appendChild(buildProductCard(p)));
     }
 
     if (desktopItemCount) desktopItemCount.textContent = itemsCountLabel(filtered.length, currentLang);
     if (mobileItemCount) mobileItemCount.textContent = itemsCountLabel(filtered.length, currentLang);
+
+    renderPagination(totalPages);
   };
+
+  function goToPage(page) {
+    state.currentPage = page;
+    renderProductGridInternal();
+    // Jump back to the top of the catalog so the newly-loaded page is
+    // actually visible, rather than leaving the scroll position wherever
+    // it was on the (now different) previous page.
+    const catalogSection = document.getElementById('catalog');
+    if (catalogSection) catalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function renderPagination(totalPages) {
+    if (!paginationEl || !paginationNumbers) return;
+
+    if (totalPages <= 1) {
+      paginationEl.classList.add('hidden');
+      return;
+    }
+    paginationEl.classList.remove('hidden');
+
+    const current = state.currentPage;
+    paginationPrevBtn.disabled = current <= 1;
+    paginationNextBtn.disabled = current >= totalPages;
+
+    // Build a compact page list: always show first/last, the current
+    // page and its immediate neighbours, and "…" for any gap — standard
+    // pagination pattern so this doesn't turn into 40 buttons for a
+    // large catalog.
+    const pages = [];
+    for (let p = 1; p <= totalPages; p++) {
+      if (p === 1 || p === totalPages || Math.abs(p - current) <= 1) {
+        pages.push(p);
+      } else if (pages[pages.length - 1] !== '…') {
+        pages.push('…');
+      }
+    }
+
+    paginationNumbers.innerHTML = '';
+    pages.forEach(p => {
+      if (p === '…') {
+        const span = document.createElement('span');
+        span.className = 'pagination-ellipsis';
+        span.textContent = '…';
+        paginationNumbers.appendChild(span);
+        return;
+      }
+      const btn = document.createElement('button');
+      btn.className = 'pagination-btn' + (p === current ? ' active' : '');
+      btn.textContent = p;
+      btn.addEventListener('click', () => goToPage(p));
+      paginationNumbers.appendChild(btn);
+    });
+  }
+
+  if (paginationPrevBtn) {
+    paginationPrevBtn.addEventListener('click', () => {
+      if (state.currentPage > 1) goToPage(state.currentPage - 1);
+    });
+  }
+  if (paginationNextBtn) {
+    paginationNextBtn.addEventListener('click', () => {
+      const totalPages = Math.max(1, Math.ceil(getFilteredProducts().length / PRODUCTS_PER_PAGE));
+      if (state.currentPage < totalPages) goToPage(state.currentPage + 1);
+    });
+  }
+
   // Exposed globally so the search box and favorites panel can trigger a re-render.
   window.renderProductGrid = renderProductGridInternal;
 
