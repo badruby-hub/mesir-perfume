@@ -160,23 +160,5 @@
       "en": "Neroli · Ylang-ylang · Iris",
       "ru": "Нероли · Иланг-иланг · Ирис"
     }
-  },
-  {
-    "id": 10,
-    "brand": "Test",
-    "name": "test",
-    "price": 325,
-    "size": "50ml",
-    "country": "armenia",
-    "availability": "in-stock",
-    "image": "https://images.unsplash.com/photo-1774682060997-f8959850a7d4?w=700&h=900&fit=crop&auto=format",
-    "description": {
-      "en": "asdsdsadsaads",
-      "ru": "asdsasda"
-    },
-    "notes": {
-      "en": "asssad",
-      "ru": "dssadsadas"
-    }
   }
 ]
