@@ -1,13 +1,12 @@
 // ==================== DATA LOADER ====================
-// Products and hero slides used to be hardcoded here. Now they live as
-// plain JSON files in /data/, which the admin panel (see /admin) edits by
-// committing straight to the GitHub repo — Vercel then redeploys
-// automatically. This file just fetches that JSON at page-load time.
+// Products and hero slides live in Supabase now (edited via the admin
+// panel at /admin), not hardcoded here. This file fetches them from
+// /api/site-data, which reads from Supabase server-side.
 //
-// `brands` / `sizes` / `countries` are the filter category *lists* shown
-// in the sidebar — these change far less often than the product catalog
-// itself, so they stay as a small static file (data/filters.json) rather
-// than going through the admin UI. Ask if you'd like those editable too.
+// `window.__siteDataPromise` is shared with i18n.js so the two scripts
+// only trigger ONE network request between them, regardless of which
+// loads first — whichever runs first creates the promise, the other
+// just reuses it.
 
 let products = [];
 let slides = [];
@@ -15,18 +14,16 @@ let brands = [];
 let sizes = [];
 let countries = [];
 
+window.__siteDataPromise = window.__siteDataPromise || fetch('/api/site-data').then((r) => r.json());
+
 // Other scripts (script.js) await this before touching products/slides,
 // so nothing tries to render an empty list before the fetch resolves.
 window.dataReady = (async () => {
   try {
-    const [productsRes, slidesRes, filtersRes] = await Promise.all([
-      fetch('data/products.json'),
-      fetch('data/slides.json'),
-      fetch('data/filters.json'),
-    ]);
-    products = await productsRes.json();
-    slides = await slidesRes.json();
-    const filters = await filtersRes.json();
+    const all = await window.__siteDataPromise;
+    products = all.products || [];
+    slides = all.slides || [];
+    const filters = all.filters || {};
     brands = filters.brands || [];
     sizes = filters.sizes || [];
     countries = filters.countries || [];

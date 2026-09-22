@@ -1,16 +1,17 @@
 // api/admin/data.js
 //
-// Returns the current content of every editable JSON file, read live
-// from GitHub (not from the deployed site's own /data/*.json — those can
-// lag a few seconds behind the latest commit while Vercel redeploys).
-const { readFile } = require('../../lib/github');
+// Returns the current content of every editable piece of data, read live
+// from Supabase.
+const { readRow } = require('../../lib/supabase');
 const { isAuthenticated } = require('../../lib/auth');
 
-const FILES = {
-  products: 'data/products.json',
-  slides: 'data/slides.json',
-  i18n: 'data/i18n.json',
-  filters: 'data/filters.json',
+const KEYS = ['products', 'slides', 'i18n', 'filters', 'labels'];
+const DEFAULTS = {
+  products: [],
+  slides: [],
+  i18n: { en: {}, ru: {} },
+  filters: { brands: [], sizes: [], countries: [] },
+  labels: { countryLabels: { en: {}, ru: {} }, availabilityLabels: { en: {}, ru: {} } },
 };
 
 module.exports = async (req, res) => {
@@ -26,15 +27,11 @@ module.exports = async (req, res) => {
 
   try {
     const entries = await Promise.all(
-      Object.entries(FILES).map(async ([key, path]) => {
-        const { content } = await readFile(path);
-        return [key, JSON.parse(content)];
-      })
+      KEYS.map(async (k) => [k, (await readRow(k)) ?? DEFAULTS[k]])
     );
-
     res.status(200).json(Object.fromEntries(entries));
   } catch (err) {
     console.error('Admin data fetch error:', err);
-    res.status(500).json({ error: 'Failed to load data from GitHub' });
+    res.status(500).json({ error: 'Failed to load data from Supabase', detail: String(err.message || err) });
   }
 };

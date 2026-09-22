@@ -1,18 +1,25 @@
 // api/admin/upload.js
 //
-// Uploads an image picked from the admin's computer straight into this
-// repo's assets/uploads/ folder (as a git commit, same as everything
-// else the admin panel saves) and returns the path the site can use as
-// an <img src>. Vercel serves it like any other static file — no
-// separate image host or storage service needed.
+// Uploads an image picked from the admin's computer to Supabase Storage
+// (bucket "uploads", must be created as PUBLIC in the Supabase dashboard)
+// and returns its public URL for use as an <img src>.
 //
 // Expects: { filename: string, contentBase64: string }
-// (contentBase64 is the raw base64 payload — strip any "data:image/...;base64,"
-// prefix client-side before sending.)
-const { writeBinaryFile } = require('../../lib/github');
+// (contentBase64 is the raw base64 payload — strip any
+// "data:image/...;base64," prefix client-side before sending.)
+const { uploadFile } = require('../../lib/supabase');
 const { isAuthenticated } = require('../../lib/auth');
 
 const MAX_BYTES = 5 * 1024 * 1024; // 5 MB — generous for a product photo
+
+const CONTENT_TYPES = {
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+  webp: 'image/webp',
+  gif: 'image/gif',
+  svg: 'image/svg+xml',
+};
 
 function sanitizeFilename(name) {
   const hasExt = name.includes('.');
@@ -53,14 +60,14 @@ module.exports = async (req, res) => {
     }
 
     const safeName = sanitizeFilename(filename);
-    // Timestamp prefix guarantees a unique filename, so we never need to
-    // read an existing file's sha first (no conflict is possible).
-    const path = `assets/uploads/${Date.now()}-${safeName}`;
+    const ext = safeName.split('.').pop();
+    // Timestamp prefix guarantees a unique object name, so we never clash
+    // with a previous upload.
+    const path = `${Date.now()}-${safeName}`;
 
-    await writeBinaryFile(path, contentBase64, null, `Upload image: ${safeName}`);
+    const publicUrl = await uploadFile(path, contentBase64, CONTENT_TYPES[ext] || 'application/octet-stream');
 
-    // Site-relative path — works because this repo IS the deployed site.
-    res.status(200).json({ success: true, path: `/${path}` });
+    res.status(200).json({ success: true, path: publicUrl });
   } catch (err) {
     console.error('Upload error:', err);
     res.status(500).json({ error: 'Upload failed', detail: String(err.message || err) });

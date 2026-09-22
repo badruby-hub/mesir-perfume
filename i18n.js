@@ -89,15 +89,15 @@ function applyStaticTranslations() {
 
 // Fetched once at page load; script.js (and this file's own
 // DOMContentLoaded handler) await this before rendering anything that
-// depends on translated text.
+// depends on translated text. Shares one network request with data.js
+// via window.__siteDataPromise — see the comment there.
+window.__siteDataPromise = window.__siteDataPromise || fetch('/api/site-data').then((r) => r.json());
+
 window.i18nReady = (async () => {
   try {
-    const [i18nRes, labelsRes] = await Promise.all([
-      fetch('data/i18n.json'),
-      fetch('data/labels.json'),
-    ]);
-    translations = await i18nRes.json();
-    const labels = await labelsRes.json();
+    const all = await window.__siteDataPromise;
+    translations = all.i18n || translations;
+    const labels = all.labels || {};
     countryLabels = labels.countryLabels || countryLabels;
     availabilityLabels = labels.availabilityLabels || availabilityLabels;
   } catch (err) {

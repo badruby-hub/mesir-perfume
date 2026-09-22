@@ -137,6 +137,17 @@ textarea { resize: vertical; min-height: 70px; }
 }
 .logout-btn:hover { color: var(--gold); border-color: var(--gold); }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.dirty-indicator {
+  font-size: 11px;
+  color: #e0a020;
+  white-space: nowrap;
+}
+
 .admin-main {
   max-width: 1200px;
   margin: 0 auto;

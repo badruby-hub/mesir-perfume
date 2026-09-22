@@ -29,7 +29,11 @@
       <button class="admin-tab" data-tab="slides">Hero-слайды</button>
       <button class="admin-tab" data-tab="texts">Тексты сайта</button>
     </nav>
-    <button id="logout-btn" class="logout-btn">Выйти</button>
+    <div class="header-actions">
+      <span id="dirty-indicator" class="dirty-indicator hidden">● Есть несохранённые изменения</span>
+      <button id="publish-btn" class="btn-primary">Опубликовать</button>
+      <button id="logout-btn" class="logout-btn">Выйти</button>
+    </div>
   </header>
 
   <main class="admin-main">
@@ -72,9 +76,8 @@
     <section id="tab-texts" class="admin-tab-panel hidden">
       <div class="panel-header">
         <h2>Тексты сайта</h2>
-        <button id="save-texts-btn" class="btn-primary">Сохранить все тексты</button>
       </div>
-      <p class="panel-hint">Каждая строка сайта — на английском и русском. Изменения применятся ко всем страницам после сохранения.</p>
+      <p class="panel-hint">Каждая строка сайта — на английском и русском. Правки применятся к сайту после нажатия «Опубликовать» в шапке.</p>
       <div id="texts-list" class="texts-list"></div>
     </section>
   </main>

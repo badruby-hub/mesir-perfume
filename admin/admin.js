@@ -1,10 +1,11 @@
 // admin/admin.js
 //
 // All admin state lives in memory here and is loaded fresh from GitHub
-// (via /api/admin/data) on login. Every add/edit/delete updates this
-// in-memory copy, then immediately posts the WHOLE updated array/object
-// back to /api/admin/save — simplest possible model, no partial-patch
-// logic to get wrong.
+// (via /api/admin/data) on login. Add/edit/delete across Products, Slides
+// and Texts only update this in-memory copy and mark that section
+// "dirty" — nothing is committed to GitHub until the admin explicitly
+// clicks "Опубликовать" in the header, which then saves every dirty
+// section in one go.
 
 let state = {
   products: [],
@@ -12,6 +13,28 @@ let state = {
   i18n: { en: {}, ru: {} },
   filters: { brands: [], sizes: [], countries: [] },
 };
+
+// Tracks which top-level sections have unpublished changes.
+const dirty = { products: false, slides: false, i18n: false };
+
+function markDirty(type) {
+  dirty[type] = true;
+  updateDirtyIndicator();
+}
+
+function updateDirtyIndicator() {
+  const anyDirty = dirty.products || dirty.slides || dirty.i18n;
+  document.getElementById('dirty-indicator').classList.toggle('hidden', !anyDirty);
+}
+
+// Warn before leaving the page (closing tab, navigating away) if there
+// are unpublished changes, so an admin doesn't lose work by accident.
+window.addEventListener('beforeunload', (e) => {
+  if (dirty.products || dirty.slides || dirty.i18n) {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 
 // =======================================================
 // LOGIN / SESSION
@@ -61,6 +84,9 @@ loginForm.addEventListener('submit', async (e) => {
 });
 
 logoutBtn.addEventListener('click', async () => {
+  if (dirty.products || dirty.slides || dirty.i18n) {
+    if (!confirm('Есть неопубликованные изменения — они будут потеряны. Выйти всё равно?')) return;
+  }
   await fetch('/api/admin/logout', { method: 'POST' });
   location.reload();
 });
@@ -90,6 +116,10 @@ async function loadAllData() {
     const res = await fetch('/api/admin/data');
     if (!res.ok) throw new Error('Failed to load');
     state = await res.json();
+    dirty.products = false;
+    dirty.slides = false;
+    dirty.i18n = false;
+    updateDirtyIndicator();
     globalStatus.classList.add('hidden');
     renderProducts();
     renderSlides();
@@ -100,25 +130,42 @@ async function loadAllData() {
 }
 
 // =======================================================
-// SAVE HELPER
+// PUBLISH — the only place that actually commits to GitHub
 // =======================================================
 async function saveType(type, data, message) {
-  showStatus('Сохранение...', 'loading');
-  try {
-    const res = await fetch('/api/admin/save', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type, data, message }),
-    });
-    const body = await res.json();
-    if (!res.ok) throw new Error(body.detail || body.error || 'Save failed');
-    showStatus('Сохранено — сайт обновится в течение ~30–60 секунд.', 'success');
-    return true;
-  } catch (err) {
-    showStatus(`Ошибка сохранения: ${err.message}`, 'error');
-    return false;
-  }
+  const res = await fetch('/api/admin/save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type, data, message }),
+  });
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.detail || body.error || 'Save failed');
 }
+
+document.getElementById('publish-btn').addEventListener('click', async () => {
+  const toPublish = [];
+  if (dirty.products) toPublish.push('products');
+  if (dirty.slides) toPublish.push('slides');
+  if (dirty.i18n) toPublish.push('i18n');
+
+  if (toPublish.length === 0) {
+    showStatus('Нет несохранённых изменений.', 'success');
+    return;
+  }
+
+  showStatus(`Публикация (${toPublish.length})...`, 'loading');
+  try {
+    for (const type of toPublish) {
+      await saveType(type, state[type], `Update ${type} via admin panel`);
+      dirty[type] = false;
+    }
+    updateDirtyIndicator();
+    showStatus('Опубликовано — сайт обновится в течение ~30–60 секунд.', 'success');
+  } catch (err) {
+    updateDirtyIndicator();
+    showStatus(`Ошибка публикации: ${err.message}. Уже сохранённые разделы отмечены, остальное можно опубликовать повторно.`, 'error');
+  }
+});
 
 // =======================================================
 // TABS
@@ -155,14 +202,19 @@ function askConfirm(text, onConfirm) {
   openModal('confirm-modal');
 }
 document.getElementById('confirm-cancel-btn').addEventListener('click', () => closeModal('confirm-modal'));
-document.getElementById('confirm-ok-btn').addEventListener('click', async () => {
+document.getElementById('confirm-ok-btn').addEventListener('click', () => {
   closeModal('confirm-modal');
-  if (confirmCallback) await confirmCallback();
+  if (confirmCallback) confirmCallback();
 });
 
 // =======================================================
 // IMAGE UPLOAD (product/slide photos, straight from the admin's computer)
 // =======================================================
+// Note: uploads are the one exception to "nothing happens until Publish"
+// — the file itself is committed immediately so the preview/thumbnail
+// works right away. It's an inert, orphaned file until a product or
+// slide actually references its path AND that change gets published, so
+// this doesn't defeat the staging model in practice.
 function readFileAsBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -251,10 +303,10 @@ function renderProducts() {
   tbody.querySelectorAll('[data-delete]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const product = state.products.find((p) => p.id === +btn.dataset.delete);
-      askConfirm(`Удалить «${product.brand} ${product.name}»? Это действие необратимо.`, async () => {
+      askConfirm(`Удалить «${product.brand} ${product.name}»? (Удаление применится после публикации.)`, () => {
         state.products = state.products.filter((p) => p.id !== product.id);
-        const ok = await saveType('products', state.products, `Remove product: ${product.brand} ${product.name}`);
-        if (ok) renderProducts(); else await loadAllData();
+        markDirty('products');
+        renderProducts();
       });
     });
   });
@@ -286,7 +338,7 @@ function openProductForm(id) {
 
 document.getElementById('add-product-btn').addEventListener('click', () => openProductForm(null));
 
-document.getElementById('product-form').addEventListener('submit', async (e) => {
+document.getElementById('product-form').addEventListener('submit', (e) => {
   e.preventDefault();
   const idVal = document.getElementById('pf-id').value;
   const isEdit = !!idVal;
@@ -316,17 +368,9 @@ document.getElementById('product-form').addEventListener('submit', async (e) => 
     state.products = [...state.products, product];
   }
 
-  const ok = await saveType(
-    'products',
-    state.products,
-    isEdit ? `Edit product: ${product.brand} ${product.name}` : `Add product: ${product.brand} ${product.name}`
-  );
-  if (ok) {
-    closeModal('product-modal');
-    renderProducts();
-  } else {
-    await loadAllData();
-  }
+  markDirty('products');
+  closeModal('product-modal');
+  renderProducts();
 });
 
 // =======================================================
@@ -364,10 +408,10 @@ function renderSlides() {
   list.querySelectorAll('[data-delete]').forEach((btn) => {
     btn.addEventListener('click', () => {
       const slide = state.slides.find((s) => s.id === +btn.dataset.delete);
-      askConfirm(`Удалить слайд «${slide.name}»?`, async () => {
+      askConfirm(`Удалить слайд «${slide.name}»? (Удаление применится после публикации.)`, () => {
         state.slides = state.slides.filter((s) => s.id !== slide.id);
-        const ok = await saveType('slides', state.slides, `Remove slide: ${slide.name}`);
-        if (ok) renderSlides(); else await loadAllData();
+        markDirty('slides');
+        renderSlides();
       });
     });
   });
@@ -397,7 +441,7 @@ function openSlideForm(id) {
 
 document.getElementById('add-slide-btn').addEventListener('click', () => openSlideForm(null));
 
-document.getElementById('slide-form').addEventListener('submit', async (e) => {
+document.getElementById('slide-form').addEventListener('submit', (e) => {
   e.preventDefault();
   const idVal = document.getElementById('sf-id').value;
   const isEdit = !!idVal;
@@ -430,13 +474,9 @@ document.getElementById('slide-form').addEventListener('submit', async (e) => {
     state.slides = [...state.slides, slide];
   }
 
-  const ok = await saveType('slides', state.slides, isEdit ? `Edit slide: ${slide.name}` : `Add slide: ${slide.name}`);
-  if (ok) {
-    closeModal('slide-modal');
-    renderSlides();
-  } else {
-    await loadAllData();
-  }
+  markDirty('slides');
+  closeModal('slide-modal');
+  renderSlides();
 });
 
 // =======================================================
@@ -457,22 +497,21 @@ function renderTexts() {
     `;
     list.appendChild(row);
   });
+
+  // Every keystroke updates state in-memory and marks the section dirty —
+  // there's no separate "apply" step for texts, since there's nothing to
+  // commit until the global Publish button is used anyway.
+  list.querySelectorAll('input[data-lang]').forEach((input) => {
+    input.addEventListener('input', () => {
+      state.i18n[input.dataset.lang][input.dataset.key] = input.value;
+      markDirty('i18n');
+    });
+  });
 }
 
 function escapeAttr(s) {
   return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 }
-
-document.getElementById('save-texts-btn').addEventListener('click', async () => {
-  document.querySelectorAll('#texts-list input[data-lang="en"]').forEach((input) => {
-    state.i18n.en[input.dataset.key] = input.value;
-  });
-  document.querySelectorAll('#texts-list input[data-lang="ru"]').forEach((input) => {
-    state.i18n.ru[input.dataset.key] = input.value;
-  });
-
-  await saveType('i18n', state.i18n, 'Update site texts via admin panel');
-});
 
 // =======================================================
 // INIT
