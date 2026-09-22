@@ -161,6 +161,57 @@ document.getElementById('confirm-ok-btn').addEventListener('click', async () => 
 });
 
 // =======================================================
+// IMAGE UPLOAD (product/slide photos, straight from the admin's computer)
+// =======================================================
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      // reader.result is "data:image/jpeg;base64,AAAA..." — strip the prefix.
+      const base64 = String(reader.result).split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadImage(file, statusEl, urlInput) {
+  statusEl.textContent = 'Загрузка...';
+  statusEl.className = 'upload-status uploading';
+
+  try {
+    const contentBase64 = await readFileAsBase64(file);
+    const res = await fetch('/api/admin/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: file.name, contentBase64 }),
+    });
+    const body = await res.json();
+    if (!res.ok) throw new Error(body.detail || body.error || 'Upload failed');
+
+    urlInput.value = body.path;
+    statusEl.textContent = `Загружено: ${body.path}`;
+    statusEl.className = 'upload-status success';
+  } catch (err) {
+    statusEl.textContent = `Ошибка загрузки: ${err.message}`;
+    statusEl.className = 'upload-status error';
+  }
+}
+
+document.getElementById('pf-image-file').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  uploadImage(file, document.getElementById('pf-upload-status'), document.getElementById('pf-image'));
+});
+
+document.getElementById('sf-image-file').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  uploadImage(file, document.getElementById('sf-upload-status'), document.getElementById('sf-image'));
+});
+
+// =======================================================
 // PRODUCTS
 // =======================================================
 function nextProductId() {
@@ -212,6 +263,8 @@ function renderProducts() {
 function openProductForm(id) {
   const form = document.getElementById('product-form');
   form.reset();
+  document.getElementById('pf-upload-status').textContent = '';
+  document.getElementById('pf-upload-status').className = 'upload-status';
   const product = id ? state.products.find((p) => p.id === id) : null;
 
   document.getElementById('product-modal-title').textContent = product ? 'Изменить товар' : 'Добавить товар';
@@ -323,6 +376,8 @@ function renderSlides() {
 function openSlideForm(id) {
   const form = document.getElementById('slide-form');
   form.reset();
+  document.getElementById('sf-upload-status').textContent = '';
+  document.getElementById('sf-upload-status').className = 'upload-status';
   const slide = id ? state.slides.find((s) => s.id === id) : null;
 
   document.getElementById('slide-modal-title').textContent = slide ? 'Изменить слайд' : 'Добавить слайд';

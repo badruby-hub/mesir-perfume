@@ -404,6 +404,14 @@ textarea { resize: vertical; min-height: 70px; }
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+.upload-status {
+  font-size: 11px;
+  color: var(--text-dim);
+  min-height: 14px;
+}
+.upload-status.uploading { color: var(--gold); }
+.upload-status.success { color: var(--gold); }
+.upload-status.error { color: #e07a5f; }
 .modal-actions {
   display: flex;
   justify-content: flex-end;
