@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "name": "OUD ROYAL",
+    "brand": "MESIR",
+    "price": "$380",
+    "image": "https://images.unsplash.com/photo-1774682060997-f8959850a7d4?w=700&h=900&fit=crop&auto=format",
+    "accent": "#c9901a",
+    "tagline": {
+      "en": "An Ode to Ancient Luxury",
+      "ru": "Ода древней роскоши"
+    },
+    "description": {
+      "en": "An elegant composition built around rich oud, warm amber and subtle oriental spices. A fragrance that commands presence.",
+      "ru": "Элегантная композиция на основе насыщенного уда, тёплой амбры и тонких восточных специй. Аромат, требующий присутствия."
+    },
+    "notes": {
+      "en": [
+        "Top: Saffron, Cardamom",
+        "Heart: Oud, Rose",
+        "Base: Amber, Musk"
+      ],
+      "ru": [
+        "Верхние: шафран, кардамон",
+        "Средние: уд, роза",
+        "Базовые: амбра, мускус"
+      ]
+    }
+  },
+  {
+    "id": 2,
+    "name": "NUIT DE SOIE",
+    "brand": "MESIR",
+    "price": "$290",
+    "image": "https://images.unsplash.com/photo-1780943004195-3bd30f748872?w=700&h=900&fit=crop&auto=format",
+    "accent": "#b8860b",
+    "tagline": {
+      "en": "The Fragrance of Evening Silk",
+      "ru": "Аромат вечернего шёлка"
+    },
+    "description": {
+      "en": "A velvet night composition — jasmine petals drifting over sandalwood, finished with a whisper of white musk.",
+      "ru": "Бархатная ночная композиция — лепестки жасмина парят над сандалом, завершаясь шёпотом белого мускуса."
+    },
+    "notes": {
+      "en": [
+        "Top: Bergamot, Neroli",
+        "Heart: Jasmine, Iris",
+        "Base: Sandalwood, Musk"
+      ],
+      "ru": [
+        "Верхние: бергамот, нероли",
+        "Средние: жасмин, ирис",
+        "Базовые: сандал, мускус"
+      ]
+    }
+  },
+  {
+    "id": 3,
+    "name": "ENCENS MYSTIC",
+    "brand": "MESIR",
+    "price": "$420",
+    "image": "https://images.unsplash.com/photo-1771762013405-ad64577dfc55?w=700&h=900&fit=crop&auto=format",
+    "accent": "#d4a017",
+    "tagline": {
+      "en": "Sacred Smoke & Rare Resins",
+      "ru": "Священный дым и редкие смолы"
+    },
+    "description": {
+      "en": "Ancient incense trails blended with rare frankincense and cedarwood — a spiritual journey captured in crystal.",
+      "ru": "Древние тропы благовоний в сочетании с редким ладаном и кедром — духовное путешествие, застывшее в хрустале."
+    },
+    "notes": {
+      "en": [
+        "Top: Black Pepper, Incense",
+        "Heart: Frankincense, Myrrh",
+        "Base: Cedar, Vetiver"
+      ],
+      "ru": [
+        "Верхние: чёрный перец, ладан",
+        "Средние: франкинцес, мирра",
+        "Базовые: кедр, ветивер"
+      ]
+    }
+  },
+  {
+    "id": 4,
+    "name": "ROSE IMPÉRIALE",
+    "brand": "MESIR",
+    "price": "$340",
+    "image": "https://images.unsplash.com/photo-1774682060992-46c7e9f2e50b?w=700&h=900&fit=crop&auto=format",
+    "accent": "#c68a20",
+    "tagline": {
+      "en": "The Queen of All Roses",
+      "ru": "Королева всех роз"
+    },
+    "description": {
+      "en": "Bulgarian rose at its most imperial — layered over warm patchouli and precious woods for timeless elegance.",
+      "ru": "Болгарская роза в своём самом царственном обличии — на фоне тёплой пачули и драгоценных пород дерева ради вневременной элегантности."
+    },
+    "notes": {
+      "en": [
+        "Top: Pink Pepper, Lychee",
+        "Heart: Rose, Peony",
+        "Base: Patchouli, Vanilla"
+      ],
+      "ru": [
+        "Верхние: розовый перец, личи",
+        "Средние: роза, пион",
+        "Базовые: пачули, ваниль"
+      ]
+    }
+  },
+  {
+    "id": 5,
+    "name": "AMBRE SULTAN",
+    "brand": "MESIR",
+    "price": "$460",
+    "image": "https://images.unsplash.com/photo-1774682060922-c395859148c9?w=700&h=900&fit=crop&auto=format",
+    "accent": "#e0a020",
+    "tagline": {
+      "en": "The Sultan's Golden Chamber",
+      "ru": "Золотые покои султана"
+    },
+    "description": {
+      "en": "Warm amber resins mingled with labdanum, honey and dried herbs — opulent, hypnotic, unforgettable.",
+      "ru": "Тёплые амбровые смолы в сочетании с лабданумом, мёдом и сушёными травами — роскошный, гипнотический, незабываемый."
+    },
+    "notes": {
+      "en": [
+        "Top: Coriander, Bay Leaf",
+        "Heart: Amber, Cistus",
+        "Base: Labdanum, Honey"
+      ],
+      "ru": [
+        "Верхние: кориандр, лавровый лист",
+        "Средние: амбра, цистус",
+        "Базовые: лабданум, мёд"
+      ]
+    }
+  }
+]

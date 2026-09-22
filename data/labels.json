@@ -1,0 +1,30 @@
+{
+  "countryLabels": {
+    "en": {
+      "France": "France",
+      "Italy": "Italy",
+      "UAE": "UAE",
+      "UK": "UK",
+      "USA": "USA",
+      "Spain": "Spain"
+    },
+    "ru": {
+      "France": "Франция",
+      "Italy": "Италия",
+      "UAE": "ОАЭ",
+      "UK": "Великобритания",
+      "USA": "США",
+      "Spain": "Испания"
+    }
+  },
+  "availabilityLabels": {
+    "en": {
+      "in-stock": "In Stock",
+      "made-to-order": "Made to Order"
+    },
+    "ru": {
+      "in-stock": "В наличии",
+      "made-to-order": "Под заказ"
+    }
+  }
+}

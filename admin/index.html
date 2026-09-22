@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MESIR — Admin</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- ============ LOGIN SCREEN ============ -->
+<div id="login-screen" class="login-screen">
+  <form id="login-form" class="login-form">
+    <h1 class="login-title">MESIR Admin</h1>
+    <input type="password" id="login-password" class="login-input" placeholder="Пароль" autocomplete="current-password" required>
+    <button type="submit" class="login-btn">Войти</button>
+    <p id="login-error" class="login-error hidden">Неверный пароль</p>
+  </form>
+</div>
+
+<!-- ============ ADMIN APP ============ -->
+<div id="admin-app" class="admin-app hidden">
+  <header class="admin-header">
+    <h1 class="admin-logo">MESIR <span>Admin</span></h1>
+    <nav class="admin-tabs">
+      <button class="admin-tab active" data-tab="products">Товары</button>
+      <button class="admin-tab" data-tab="slides">Hero-слайды</button>
+      <button class="admin-tab" data-tab="texts">Тексты сайта</button>
+    </nav>
+    <button id="logout-btn" class="logout-btn">Выйти</button>
+  </header>
+
+  <main class="admin-main">
+    <div id="global-status" class="global-status hidden"></div>
+
+    <!-- ---------- PRODUCTS TAB ---------- -->
+    <section id="tab-products" class="admin-tab-panel">
+      <div class="panel-header">
+        <h2>Товары <span id="products-count" class="count-badge"></span></h2>
+        <button id="add-product-btn" class="btn-primary">+ Добавить товар</button>
+      </div>
+      <div id="products-table-wrap" class="table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Фото</th>
+              <th>Бренд / Название</th>
+              <th>Цена</th>
+              <th>Объём</th>
+              <th>Страна</th>
+              <th>Наличие</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="products-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ---------- SLIDES TAB ---------- -->
+    <section id="tab-slides" class="admin-tab-panel hidden">
+      <div class="panel-header">
+        <h2>Hero-слайды <span id="slides-count" class="count-badge"></span></h2>
+        <button id="add-slide-btn" class="btn-primary">+ Добавить слайд</button>
+      </div>
+      <div id="slides-list" class="slides-list"></div>
+    </section>
+
+    <!-- ---------- TEXTS TAB ---------- -->
+    <section id="tab-texts" class="admin-tab-panel hidden">
+      <div class="panel-header">
+        <h2>Тексты сайта</h2>
+        <button id="save-texts-btn" class="btn-primary">Сохранить все тексты</button>
+      </div>
+      <p class="panel-hint">Каждая строка сайта — на английском и русском. Изменения применятся ко всем страницам после сохранения.</p>
+      <div id="texts-list" class="texts-list"></div>
+    </section>
+  </main>
+</div>
+
+<!-- ============ PRODUCT FORM MODAL ============ -->
+<div id="product-modal" class="modal-overlay hidden">
+  <div class="modal-backdrop"></div>
+  <div class="modal-panel">
+    <div class="modal-header">
+      <h3 id="product-modal-title">Добавить товар</h3>
+      <button class="modal-close-btn" data-close="product-modal">&times;</button>
+    </div>
+    <form id="product-form" class="modal-form">
+      <input type="hidden" id="pf-id">
+      <div class="form-row-2">
+        <div class="field">
+          <label>Бренд</label>
+          <input type="text" id="pf-brand" required>
+        </div>
+        <div class="field">
+          <label>Название</label>
+          <input type="text" id="pf-name" required>
+        </div>
+      </div>
+      <div class="form-row-3">
+        <div class="field">
+          <label>Цена ($)</label>
+          <input type="number" id="pf-price" min="0" step="1" required>
+        </div>
+        <div class="field">
+          <label>Объём</label>
+          <input type="text" id="pf-size" placeholder="50 ml" required>
+        </div>
+        <div class="field">
+          <label>Страна</label>
+          <input type="text" id="pf-country" placeholder="France" required>
+        </div>
+      </div>
+      <div class="field">
+        <label>Наличие</label>
+        <select id="pf-availability">
+          <option value="in-stock">In Stock</option>
+          <option value="made-to-order">Made to Order</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Ссылка на изображение</label>
+        <input type="url" id="pf-image" placeholder="https://..." required>
+      </div>
+      <div class="form-row-2">
+        <div class="field">
+          <label>Описание (EN)</label>
+          <textarea id="pf-desc-en" required></textarea>
+        </div>
+        <div class="field">
+          <label>Описание (RU)</label>
+          <textarea id="pf-desc-ru" required></textarea>
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="field">
+          <label>Ноты (EN)</label>
+          <input type="text" id="pf-notes-en" placeholder="Oud · Rosewood · Amber" required>
+        </div>
+        <div class="field">
+          <label>Ноты (RU)</label>
+          <input type="text" id="pf-notes-ru" placeholder="Уд · Розовое дерево · Амбра" required>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn-primary">Сохранить</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ SLIDE FORM MODAL ============ -->
+<div id="slide-modal" class="modal-overlay hidden">
+  <div class="modal-backdrop"></div>
+  <div class="modal-panel">
+    <div class="modal-header">
+      <h3 id="slide-modal-title">Добавить слайд</h3>
+      <button class="modal-close-btn" data-close="slide-modal">&times;</button>
+    </div>
+    <form id="slide-form" class="modal-form">
+      <input type="hidden" id="sf-id">
+      <div class="form-row-2">
+        <div class="field">
+          <label>Название (латиницей)</label>
+          <input type="text" id="sf-name" placeholder="OUD ROYAL" required>
+        </div>
+        <div class="field">
+          <label>Цена (со знаком $)</label>
+          <input type="text" id="sf-price" placeholder="$380" required>
+        </div>
+      </div>
+      <div class="field">
+        <label>Ссылка на изображение</label>
+        <input type="url" id="sf-image" placeholder="https://..." required>
+      </div>
+      <div class="form-row-2">
+        <div class="field">
+          <label>Слоган (EN)</label>
+          <input type="text" id="sf-tagline-en" required>
+        </div>
+        <div class="field">
+          <label>Слоган (RU)</label>
+          <input type="text" id="sf-tagline-ru" required>
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="field">
+          <label>Описание (EN)</label>
+          <textarea id="sf-desc-en" required></textarea>
+        </div>
+        <div class="field">
+          <label>Описание (RU)</label>
+          <textarea id="sf-desc-ru" required></textarea>
+        </div>
+      </div>
+      <div class="form-row-2">
+        <div class="field">
+          <label>Ноты (EN) — по одной на строку</label>
+          <textarea id="sf-notes-en" placeholder="Top: Saffron, Cardamom&#10;Heart: Oud, Rose&#10;Base: Amber, Musk" required></textarea>
+        </div>
+        <div class="field">
+          <label>Ноты (RU) — по одной на строку</label>
+          <textarea id="sf-notes-ru" placeholder="Верхние: шафран, кардамон&#10;Средние: уд, роза&#10;Базовые: амбра, мускус" required></textarea>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button type="submit" class="btn-primary">Сохранить</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ CONFIRM DELETE MODAL ============ -->
+<div id="confirm-modal" class="modal-overlay hidden">
+  <div class="modal-backdrop"></div>
+  <div class="modal-panel modal-panel-small">
+    <div class="modal-header">
+      <h3>Удалить?</h3>
+      <button class="modal-close-btn" data-close="confirm-modal">&times;</button>
+    </div>
+    <p id="confirm-text" class="confirm-text"></p>
+    <div class="modal-actions">
+      <button id="confirm-cancel-btn" class="btn-secondary">Отмена</button>
+      <button id="confirm-ok-btn" class="btn-danger">Удалить</button>
+    </div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>

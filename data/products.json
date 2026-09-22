@@ -1,0 +1,164 @@
+[
+  {
+    "id": 1,
+    "brand": "Tom Ford",
+    "name": "Oud Wood",
+    "size": "50 ml",
+    "price": 380,
+    "country": "USA",
+    "availability": "in-stock",
+    "image": "https://images.unsplash.com/photo-1774682060997-f8959850a7d4?w=500&h=600&fit=crop&auto=format",
+    "description": {
+      "en": "Rare oud wood blended with rosewood, cardamom and Chinese pepper.",
+      "ru": "Редкое дерево уда в сочетании с розовым деревом, кардамоном и китайским перцем."
+    },
+    "notes": {
+      "en": "Oud · Rosewood · Amber",
+      "ru": "Уд · Розовое дерево · Амбра"
+    }
+  },
+  {
+    "id": 2,
+    "brand": "Creed",
+    "name": "Aventus",
+    "size": "100 ml",
+    "price": 520,
+    "country": "France",
+    "availability": "in-stock",
+    "image": "https://images.unsplash.com/photo-1780943004195-3bd30f748872?w=500&h=600&fit=crop&auto=format",
+    "description": {
+      "en": "Fruity pineapple opening over birch, musk and ambergris — the fragrance of kings.",
+      "ru": "Фруктовое открытие с ананасом на фоне берёзы, мускуса и амбры — аромат королей."
+    },
+    "notes": {
+      "en": "Pineapple · Birch · Musk",
+      "ru": "Ананас · Берёза · Мускус"
+    }
+  },
+  {
+    "id": 3,
+    "brand": "Amouage",
+    "name": "Interlude Man",
+    "size": "100 ml",
+    "price": 340,
+    "country": "UAE",
+    "availability": "in-stock",
+    "image": "https://images.unsplash.com/photo-1771762013405-ad64577dfc55?w=500&h=600&fit=crop&auto=format",
+    "description": {
+      "en": "A complex odyssey of oregano, frankincense and oud — intensity meets sophistication.",
+      "ru": "Сложная одиссея из орегано, ладана и уда — интенсивность встречается с изысканностью."
+    },
+    "notes": {
+      "en": "Oregano · Frankincense · Oud",
+      "ru": "Орегано · Ладан · Уд"
+    }
+  },
+  {
+    "id": 4,
+    "brand": "Chanel",
+    "name": "N°5 L'Eau",
+    "size": "50 ml",
+    "price": 185,
+    "country": "France",
+    "availability": "in-stock",
+    "image": "https://images.unsplash.com/photo-1774682060992-46c7e9f2e50b?w=500&h=600&fit=crop&auto=format",
+    "description": {
+      "en": "A luminous reinvention of the iconic N°5, lighter and more vibrant than ever before.",
+      "ru": "Светлое переосмысление культового N°5 — легче и ярче, чем когда-либо."
+    },
+    "notes": {
+      "en": "Aldehydes · Rose · Sandalwood",
+      "ru": "Альдегиды · Роза · Сандал"
+    }
+  },
+  {
+    "id": 5,
+    "brand": "Maison Francis Kurkdjian",
+    "name": "Baccarat Rouge 540",
+    "size": "70 ml",
+    "price": 340,
+    "country": "France",
+    "availability": "in-stock",
+    "image": "https://images.unsplash.com/photo-1778058505479-447c46d800a0?w=500&h=600&fit=crop&auto=format",
+    "description": {
+      "en": "Jasmine petals and woody notes infused with luminous amberwood and fir resin.",
+      "ru": "Лепестки жасмина и древесные ноты в сочетании со светящимся амбровым деревом и смолой пихты."
+    },
+    "notes": {
+      "en": "Jasmine · Amberwood · Fir",
+      "ru": "Жасмин · Амбровое дерево · Пихта"
+    }
+  },
+  {
+    "id": 6,
+    "brand": "Dior",
+    "name": "Sauvage Elixir",
+    "size": "60 ml",
+    "price": 210,
+    "country": "France",
+    "availability": "in-stock",
+    "image": "https://images.unsplash.com/photo-1774682060959-efe13b7a12b9?w=500&h=600&fit=crop&auto=format",
+    "description": {
+      "en": "An ambery fougère of hyper-concentrated spices, woods and warm musk.",
+      "ru": "Янтарный фужер из концентрированных специй, дерева и тёплого мускуса."
+    },
+    "notes": {
+      "en": "Spices · Elemi · Amber",
+      "ru": "Специи · Элеми · Амбра"
+    }
+  },
+  {
+    "id": 7,
+    "brand": "Tom Ford",
+    "name": "Black Orchid",
+    "size": "100 ml",
+    "price": 290,
+    "country": "USA",
+    "availability": "made-to-order",
+    "image": "https://images.unsplash.com/photo-1774682060922-c395859148c9?w=500&h=600&fit=crop&auto=format",
+    "description": {
+      "en": "Rich and dark — black orchid and spice layered over patchouli and black truffle.",
+      "ru": "Насыщенный и тёмный — чёрная орхидея и специи на фоне пачули и чёрного трюфеля."
+    },
+    "notes": {
+      "en": "Black Orchid · Truffle · Patchouli",
+      "ru": "Чёрная орхидея · Трюфель · Пачули"
+    }
+  },
+  {
+    "id": 8,
+    "brand": "Creed",
+    "name": "Silver Mountain Water",
+    "size": "100 ml",
+    "price": 460,
+    "country": "France",
+    "availability": "in-stock",
+    "image": "https://images.unsplash.com/photo-1737920459846-2d0318700658?w=500&h=600&fit=crop&auto=format",
+    "description": {
+      "en": "Fresh green tea and bergamot over sandalwood — crisp alpine air in a bottle.",
+      "ru": "Свежий зелёный чай и бергамот на фоне сандала — чистый горный воздух во флаконе."
+    },
+    "notes": {
+      "en": "Green Tea · Bergamot · Sandalwood",
+      "ru": "Зелёный чай · Бергамот · Сандал"
+    }
+  },
+  {
+    "id": 9,
+    "brand": "Amouage",
+    "name": "Reflection Woman",
+    "size": "100 ml",
+    "price": 320,
+    "country": "UAE",
+    "availability": "in-stock",
+    "image": "https://images.unsplash.com/photo-1774682060997-f8959850a7d4?w=500&h=600&fit=crop&auto=format&crop=right",
+    "description": {
+      "en": "White florals with mandarin, neroli and ylang-ylang — radiant and luminous.",
+      "ru": "Белые цветы с мандарином, нероли и иланг-илангом — лучезарный и светящийся аромат."
+    },
+    "notes": {
+      "en": "Neroli · Ylang-ylang · Iris",
+      "ru": "Нероли · Иланг-иланг · Ирис"
+    }
+  }
+]

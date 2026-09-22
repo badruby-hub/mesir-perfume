@@ -132,8 +132,9 @@ if (searchInput) {
 const heroText = document.getElementById('hero-text');
 const heroImageWrap = document.getElementById('hero-image-wrap');
 let renderHeroContent; // exposed to onLanguageChange()
+let initHero; // called once data is loaded
 
-if (heroText && heroImageWrap && typeof slides !== 'undefined') {
+if (heroText && heroImageWrap) {
   const heroBrand = document.getElementById('hero-brand');
   const heroName = document.getElementById('hero-name');
   const heroTagline = document.getElementById('hero-tagline');
@@ -210,8 +211,10 @@ if (heroText && heroImageWrap && typeof slides !== 'undefined') {
   if (heroNextBtn) heroNextBtn.addEventListener('click', nextSlide);
   if (heroPrevBtn) heroPrevBtn.addEventListener('click', prevSlide);
 
-  setInterval(nextSlide, 6000);
-  renderHeroContent();
+  initHero = function initHero() {
+    renderHeroContent();
+    setInterval(nextSlide, 6000);
+  };
 }
 
 // =======================================================
@@ -221,7 +224,7 @@ if (heroText && heroImageWrap && typeof slides !== 'undefined') {
 const productGrid = document.getElementById('product-grid');
 let renderSidebars, renderProductGridInternal; // exposed to onLanguageChange()
 
-if (productGrid && typeof products !== 'undefined') {
+if (productGrid) {
   const noResultsEl = document.getElementById('no-results');
   const noResultsClearBtn = document.getElementById('no-results-clear');
   const desktopItemCount = document.getElementById('desktop-item-count');
@@ -647,9 +650,6 @@ if (productGrid && typeof products !== 'undefined') {
     renderFavoritesPanel();
     updateBadges();
   }
-
-  renderSidebars();
-  renderProductGridInternal();
 }
 
 // =======================================================
@@ -769,7 +769,7 @@ function renderFavoritesPanel() {
 
   // products[] comes from data.js, loaded on every page, so favorites
   // can be shown/removed/added-to-cart from About/Contact too.
-  const favProducts = (typeof products !== 'undefined' ? products : []).filter(p =>
+  const favProducts = products.filter(p =>
     state.favorites.includes(p.id)
   );
 
@@ -921,6 +921,22 @@ if (orderForm) {
 // =======================================================
 // INITIAL RENDER
 // =======================================================
+// Cart/badges don't depend on the product catalog, so they render
+// immediately — no flash of an empty header. The catalog, hero slider
+// and favorites panel (which looks up product details by id) wait for
+// data.js's fetch of /data/products.json + /data/slides.json, and
+// i18n.js's fetch of /data/i18n.json, to finish first.
 renderCart();
 renderFavoritesPanel();
 updateBadges();
+
+(async () => {
+  await Promise.all([window.i18nReady, window.dataReady]);
+  if (typeof initHero === 'function') initHero();
+  if (typeof renderSidebars === 'function') renderSidebars();
+  if (typeof renderProductGridInternal === 'function') renderProductGridInternal();
+  // Re-render now that `products` is actually populated, so any
+  // already-favorited items show their real name/image/price instead
+  // of nothing.
+  renderFavoritesPanel();
+})();

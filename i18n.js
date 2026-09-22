@@ -1,234 +1,18 @@
 // =======================================================
 // I18N — English / Russian
 // Language choice persists in localStorage across pages.
+//
+// The actual translation strings used to be hardcoded in this file.
+// Now they live in /data/i18n.json (and /data/labels.json for the
+// country/availability display labels), which the admin panel (see
+// /admin) edits by committing straight to the GitHub repo — Vercel then
+// redeploys automatically. This file fetches that JSON at page-load
+// time and exposes `window.i18nReady`, which script.js awaits before
+// rendering anything that calls t().
 // =======================================================
-const translations = {
-  en: {
-    nav_catalog: 'Catalog',
-    nav_about: 'About',
-    nav_contact: 'Contact',
-    search_placeholder: 'Search perfumes, brands...',
-    aria_search: 'Search',
-    aria_favorites: 'Favorites',
-    aria_cart: 'Cart',
-    aria_menu: 'Menu',
-
-    hero_discover_btn: 'Discover',
-
-    catalog_eyebrow: 'Collection',
-    catalog_title: 'The Catalog',
-    catalog_subtitle: "Curated fragrances from the world's finest houses",
-
-    filters_btn: 'Filters',
-    filters_title: 'Filters',
-    filter_brand: 'Brand',
-    filter_size: 'Size',
-    filter_price: 'Price',
-    filter_country: 'Country',
-    filter_availability: 'Availability',
-    avail_all: 'All',
-    avail_in_stock: 'In Stock',
-    avail_made_to_order: 'Made to Order',
-    clear_filters: 'Clear Filters',
-
-    no_results_title: 'No fragrances found',
-    no_results_clear: 'Clear filters',
-
-    add_to_cart: 'Add to Cart',
-
-    cart_title: 'Your Cart',
-    cart_empty: 'Your cart is empty',
-    cart_total: 'Total',
-    checkout_btn: 'Send Request',
-
-    order_modal_title: 'Send Request',
-    order_name_label: 'Full Name',
-    order_name_placeholder: 'Jane Doe',
-    order_telegram_label: 'Telegram',
-    order_telegram_placeholder: '@username',
-    order_phone_label: 'Phone',
-    order_phone_placeholder: '+1 234 567 8900',
-    order_summary_title: 'Your order',
-    order_submit_btn: 'Submit Request',
-    order_submitting_btn: 'Sending...',
-    order_success_note: "Thank you! We've received your request and will contact you on Telegram or by phone shortly.",
-    order_error_note: 'Something went wrong. Please try again, or message us directly on Telegram.',
-
-    fav_title: 'Your Favorites',
-    fav_empty: 'No favorites yet',
-    fav_remove: 'Remove',
-    fav_add_cart: 'Add to Cart',
-
-    footer_brand_text: 'A curated house of exceptional perfumery and home fragrance, bridging the worlds of European luxury and Eastern heritage.',
-    footer_nav_title: 'Navigation',
-    footer_customer_title: 'Customer',
-    footer_contact_title: 'Contact',
-    footer_shipping: 'Shipping',
-    footer_returns: 'Returns',
-    footer_faq: 'FAQ',
-    footer_privacy: 'Privacy Policy',
-    footer_hours_label: 'By appointment, Tuesday – Saturday',
-    footer_copyright: '© 2026 MESIR Perfume & Home Fragrance. All Rights Reserved.',
-
-    // About page
-    about_eyebrow: 'Our Story',
-    about_title: 'About MESIR',
-    about_subtitle: 'A curated house of exceptional perfumery, bridging European luxury and Eastern heritage since our founding in Paris.',
-    about_lede: "MESIR was born from a simple belief: that a fragrance should be more than a scent — it should be an heirloom. We travel to the source of the world's rarest raw materials, from the oud forests of the East to the rose fields of Bulgaria, and work only with maisons whose craftsmanship honors those origins. Every bottle in our collection is chosen for its character, not its trend.",
-    value1_title: 'Rare Sourcing',
-    value1_text: 'Ingredients selected directly from growers and distillers who share our standard for quality over yield.',
-    value2_title: 'Considered Craft',
-    value2_text: 'Every composition is aged and re-tested for months before it is deemed worthy of the MESIR name.',
-    value3_title: 'Timeless Presentation',
-    value3_text: 'Each flacon is finished by hand — weighted glass, gilded caps, and packaging made to be kept.',
-    story1_title: 'Paris, 2014',
-    story1_text: "MESIR opened its first atelier on the Rue du Faubourg Saint-Honoré with a single collection of six fragrances. What united them was not a shared note, but a shared intention — to slow down, and to let rare materials speak for themselves rather than compete with a dozen synthetic accords.",
-    story2_title: 'Today',
-    story2_text: "We now work with perfumers and ateliers across France, the UAE, Italy and the United States, but the process hasn't changed: small batches, honest ingredients, and enough patience to let a fragrance become what it was always meant to be.",
-
-    // Contact page
-    contact_eyebrow: 'Get In Touch',
-    contact_title: 'Contact Us',
-    contact_subtitle: 'Questions about an order, a fragrance, or a private consultation — our atelier is happy to help.',
-    contact_email_title: 'Email',
-    contact_email_text: 'hello@mesirfragrance.com<br>We reply within one business day.',
-    contact_phone_title: 'Phone',
-    contact_phone_text: '+1 (800) 637-4700<br>Mon – Fri, 9:00 – 18:00 CET',
-    contact_atelier_title: 'Atelier',
-    contact_atelier_text: '14 Rue du Faubourg Saint-Honoré<br>Paris, France 75008',
-    contact_hours_title: 'Hours',
-    contact_hours_text: 'By appointment, Tuesday – Saturday',
-    form_name_label: 'Full Name',
-    form_name_placeholder: 'Jane Doe',
-    form_email_label: 'Email',
-    form_email_placeholder: 'jane@example.com',
-    form_subject_label: 'Subject',
-    form_subject_placeholder: 'Order inquiry, private consultation...',
-    form_message_label: 'Message',
-    form_message_placeholder: 'Tell us how we can help...',
-    form_submit_btn: 'Send Message',
-    form_success_note: "Thank you — your message has been noted. We'll be in touch shortly.",
-  },
-
-  ru: {
-    nav_catalog: 'Каталог',
-    nav_about: 'О нас',
-    nav_contact: 'Контакты',
-    search_placeholder: 'Поиск парфюмерии, брендов...',
-    aria_search: 'Поиск',
-    aria_favorites: 'Избранное',
-    aria_cart: 'Корзина',
-    aria_menu: 'Меню',
-
-    hero_discover_btn: 'Открыть',
-
-    catalog_eyebrow: 'Коллекция',
-    catalog_title: 'Каталог',
-    catalog_subtitle: 'Изысканные ароматы от лучших домов мира',
-
-    filters_btn: 'Фильтры',
-    filters_title: 'Фильтры',
-    filter_brand: 'Бренд',
-    filter_size: 'Объём',
-    filter_price: 'Цена',
-    filter_country: 'Страна',
-    filter_availability: 'Наличие',
-    avail_all: 'Все',
-    avail_in_stock: 'В наличии',
-    avail_made_to_order: 'Под заказ',
-    clear_filters: 'Сбросить фильтры',
-
-    no_results_title: 'Ароматы не найдены',
-    no_results_clear: 'Сбросить фильтры',
-
-    add_to_cart: 'В корзину',
-
-    cart_title: 'Ваша корзина',
-    cart_empty: 'Ваша корзина пуста',
-    cart_total: 'Итого',
-    checkout_btn: 'Отправить заявку',
-
-    order_modal_title: 'Оформление заявки',
-    order_name_label: 'Полное имя',
-    order_name_placeholder: 'Анна Иванова',
-    order_telegram_label: 'Telegram',
-    order_telegram_placeholder: '@username',
-    order_phone_label: 'Телефон',
-    order_phone_placeholder: '+7 900 123-45-67',
-    order_summary_title: 'Ваш заказ',
-    order_submit_btn: 'Отправить заявку',
-    order_submitting_btn: 'Отправка...',
-    order_success_note: 'Спасибо! Мы получили вашу заявку и свяжемся с вами в Telegram или по телефону в ближайшее время.',
-    order_error_note: 'Что-то пошло не так. Попробуйте ещё раз или напишите нам напрямую в Telegram.',
-
-    fav_title: 'Избранное',
-    fav_empty: 'Пока нет избранного',
-    fav_remove: 'Удалить',
-    fav_add_cart: 'В корзину',
-
-    footer_brand_text: 'Дом изысканной парфюмерии и ароматов для дома, объединяющий европейскую роскошь и восточное наследие.',
-    footer_nav_title: 'Навигация',
-    footer_customer_title: 'Клиентам',
-    footer_contact_title: 'Контакты',
-    footer_shipping: 'Доставка',
-    footer_returns: 'Возврат',
-    footer_faq: 'Вопросы',
-    footer_privacy: 'Политика конфиденциальности',
-    footer_hours_label: 'По предварительной записи, со вторника по субботу',
-    footer_copyright: '© 2026 MESIR Perfume & Home Fragrance. Все права защищены.',
-
-    // About page
-    about_eyebrow: 'Наша история',
-    about_title: 'О бренде MESIR',
-    about_subtitle: 'Дом изысканной парфюмерии, объединяющий европейскую роскошь и восточное наследие с момента основания в Париже.',
-    about_lede: 'MESIR родился из простой веры: аромат должен быть больше, чем запах — он должен становиться семейной реликвией. Мы отправляемся к самым истокам редчайшего сырья мира — от лесов уда на Востоке до розовых полей Болгарии — и работаем только с домами, чьё мастерство достойно этого происхождения. Каждый флакон в нашей коллекции выбран за характер, а не за модность.',
-    value1_title: 'Редкое сырьё',
-    value1_text: 'Ингредиенты, отобранные напрямую у производителей и дистилляторов, разделяющих наш стандарт качества, а не объёма.',
-    value2_title: 'Выверенное мастерство',
-    value2_text: 'Каждая композиция выдерживается и перепроверяется месяцами, прежде чем окажется достойной имени MESIR.',
-    value3_title: 'Вневременная подача',
-    value3_text: 'Каждый флакон отделывается вручную — увесистое стекло, позолоченные крышки и упаковка, которую хочется сохранить.',
-    story1_title: 'Париж, 2014',
-    story1_text: 'MESIR открыл свой первый ателье на Rue du Faubourg Saint-Honoré с единственной коллекцией из шести ароматов. Их объединяла не общая нота, а общее намерение — замедлиться и позволить редким материалам говорить самим за себя, а не соперничать с десятком синтетических аккордов.',
-    story2_title: 'Сегодня',
-    story2_text: 'Сегодня мы работаем с парфюмерами и ателье во Франции, ОАЭ, Италии и США, но процесс не изменился: небольшие партии, честные ингредиенты и достаточно терпения, чтобы аромат стал именно тем, чем ему суждено быть.',
-
-    // Contact page
-    contact_eyebrow: 'Связаться с нами',
-    contact_title: 'Контакты',
-    contact_subtitle: 'Вопросы о заказе, аромате или личной консультации — наш ателье всегда рад помочь.',
-    contact_email_title: 'Email',
-    contact_email_text: 'hello@mesirfragrance.com<br>Отвечаем в течение одного рабочего дня.',
-    contact_phone_title: 'Телефон',
-    contact_phone_text: '+1 (800) 637-4700<br>Пн – Пт, 9:00 – 18:00 CET',
-    contact_atelier_title: 'Ателье',
-    contact_atelier_text: '14 Rue du Faubourg Saint-Honoré<br>Париж, Франция 75008',
-    contact_hours_title: 'Часы работы',
-    contact_hours_text: 'По предварительной записи, со вторника по субботу',
-    form_name_label: 'Полное имя',
-    form_name_placeholder: 'Анна Иванова',
-    form_email_label: 'Email',
-    form_email_placeholder: 'anna@example.com',
-    form_subject_label: 'Тема',
-    form_subject_placeholder: 'Вопрос по заказу, личная консультация...',
-    form_message_label: 'Сообщение',
-    form_message_placeholder: 'Расскажите, чем мы можем помочь...',
-    form_submit_btn: 'Отправить сообщение',
-    form_success_note: 'Спасибо — ваше сообщение принято. Мы свяжемся с вами в ближайшее время.',
-  },
-};
-
-// Display-only labels for values used internally for filtering logic
-// (kept in English internally so filter matching stays stable).
-const countryLabels = {
-  en: { France: 'France', Italy: 'Italy', UAE: 'UAE', UK: 'UK', USA: 'USA', Spain: 'Spain' },
-  ru: { France: 'Франция', Italy: 'Италия', UAE: 'ОАЭ', UK: 'Великобритания', USA: 'США', Spain: 'Испания' },
-};
-
-const availabilityLabels = {
-  en: { 'in-stock': 'In Stock', 'made-to-order': 'Made to Order' },
-  ru: { 'in-stock': 'В наличии', 'made-to-order': 'Под заказ' },
-};
+let translations = { en: {}, ru: {} };
+let countryLabels = { en: {}, ru: {} };
+let availabilityLabels = { en: {}, ru: {} };
 
 // ---- Russian pluralization helper (1 товар / 2 товара / 5 товаров) ----
 function pluralRu(n, one, few, many) {
@@ -264,7 +48,7 @@ function getSavedLanguage() {
 let currentLang = getSavedLanguage();
 
 function t(key) {
-  return (translations[currentLang] && translations[currentLang][key]) || translations.en[key] || key;
+  return (translations[currentLang] && translations[currentLang][key]) || (translations.en && translations.en[key]) || key;
 }
 
 function setLanguage(lang) {
@@ -303,8 +87,27 @@ function applyStaticTranslations() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+// Fetched once at page load; script.js (and this file's own
+// DOMContentLoaded handler) await this before rendering anything that
+// depends on translated text.
+window.i18nReady = (async () => {
+  try {
+    const [i18nRes, labelsRes] = await Promise.all([
+      fetch('data/i18n.json'),
+      fetch('data/labels.json'),
+    ]);
+    translations = await i18nRes.json();
+    const labels = await labelsRes.json();
+    countryLabels = labels.countryLabels || countryLabels;
+    availabilityLabels = labels.availabilityLabels || availabilityLabels;
+  } catch (err) {
+    console.error('Failed to load translations:', err);
+  }
+})();
+
+document.addEventListener('DOMContentLoaded', async () => {
   document.documentElement.setAttribute('lang', currentLang);
+  await window.i18nReady;
   applyStaticTranslations();
 
   document.querySelectorAll('.lang-btn').forEach(btn => {

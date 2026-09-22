@@ -1,0 +1,5 @@
+{
+  "brands": ["Dior", "Chanel", "Tom Ford", "Creed", "Maison Francis Kurkdjian", "Amouage"],
+  "sizes": ["30 ml", "50 ml", "70 ml", "75 ml", "100 ml", "150 ml"],
+  "countries": ["France", "Italy", "UAE", "UK", "USA", "Spain"]
+}
