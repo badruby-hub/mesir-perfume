@@ -1,20 +1,18 @@
 // ==================== DATA LOADER ====================
 // Products and hero slides live in Supabase now (edited via the admin
-// panel at /admin), not hardcoded here. This file fetches them from
-// /api/site-data, which reads from Supabase server-side.
+// panel at /admin), not hardcoded here.
 //
-// `window.__siteDataPromise` is shared with i18n.js so the two scripts
-// only trigger ONE network request between them, regardless of which
-// loads first — whichever runs first creates the promise, the other
-// just reuses it.
+// The actual fetch straight to Supabase (no Vercel function in the
+// middle) is set up in i18n.js, which loads before this file and
+// creates window.__siteDataPromise — this file just reuses that same
+// promise, so the two scripts share ONE network request between them
+// instead of two.
 
 let products = [];
 let slides = [];
 let brands = [];
 let sizes = [];
 let countries = [];
-
-window.__siteDataPromise = window.__siteDataPromise || fetch('/api/site-data').then((r) => r.json());
 
 // Other scripts (script.js) await this before touching products/slides,
 // so nothing tries to render an empty list before the fetch resolves.

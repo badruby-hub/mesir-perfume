@@ -91,7 +91,32 @@ function applyStaticTranslations() {
 // DOMContentLoaded handler) await this before rendering anything that
 // depends on translated text. Shares one network request with data.js
 // via window.__siteDataPromise — see the comment there.
-window.__siteDataPromise = window.__siteDataPromise || fetch('/api/site-data').then((r) => r.json());
+//
+// This goes STRAIGHT to Supabase from the browser (no Vercel function in
+// the middle) — one network hop instead of two. Safe to have this key in
+// client-side code: it's the "anon"/"publishable" key, which Row Level
+// Security restricts to read-only (see supabase/rls.sql). Writes still
+// only ever happen server-side, in api/admin/*, using the separate
+// service_role key that never reaches the browser.
+const SUPABASE_URL = 'https://arcvxxbmhfpuilyygetv.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFyY3Z4eGJtaGZwdWlseXlnZXR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNzUxNzMsImV4cCI6MjEwNTY1MTE3M30.aTxa3-fIM2wHSwJEaceeOqrI7KsNbtQxNQPEh0X_Hfw';
+
+function fetchSiteDataFromSupabase() {
+  return fetch(`${SUPABASE_URL}/rest/v1/site_data?select=key,value`, {
+    headers: {
+      apikey: SUPABASE_ANON_KEY,
+      Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+    },
+  })
+    .then((r) => r.json())
+    .then((rows) => {
+      const obj = {};
+      (rows || []).forEach((row) => { obj[row.key] = row.value; });
+      return obj;
+    });
+}
+
+window.__siteDataPromise = window.__siteDataPromise || fetchSiteDataFromSupabase();
 
 window.i18nReady = (async () => {
   try {
