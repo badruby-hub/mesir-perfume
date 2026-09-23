@@ -228,11 +228,29 @@ if (heroText && heroImageWrap) {
   if (heroNextBtn) heroNextBtn.addEventListener('click', nextSlide);
   if (heroPrevBtn) heroPrevBtn.addEventListener('click', prevSlide);
 
+  // Hero slides are their own showcase items (not tied to a specific
+  // catalog product), so "Add to Cart" here builds a cart-compatible
+  // line straight from the slide's own data. The id is namespaced with
+  // a "slide-" prefix so it can never collide with a real product's
+  // numeric id in the cart's consolidation logic.
+  function slideToCartItem(slide) {
+    const numericPrice = parseInt(String(slide.price).replace(/[^0-9]/g, ''), 10) || 0;
+    return {
+      id: `slide-${slide.id}`,
+      brand: slide.brand,
+      name: slide.name,
+      price: numericPrice,
+      size: slide.size || '100 ml',
+      image: slide.image,
+    };
+  }
+
   const heroDiscoverBtn = document.getElementById('hero-discover-btn');
   if (heroDiscoverBtn) {
     heroDiscoverBtn.addEventListener('click', () => {
-      const catalogSection = document.getElementById('catalog');
-      if (catalogSection) catalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const slide = slides[state.heroCurrent];
+      if (!slide) return;
+      addToCart(slideToCartItem(slide));
     });
   }
 
