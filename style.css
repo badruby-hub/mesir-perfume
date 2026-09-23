@@ -1476,11 +1476,13 @@ input[type="range"]::-moz-range-thumb {
 }
 .order-summary-item {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 10px;
   font-family: 'Montserrat', system-ui, sans-serif;
   font-size: 12px;
   color: rgba(245,240,232,0.65);
+  padding: 6px 0;
 }
 .order-summary-item-name {
   flex: 1;
@@ -1488,6 +1490,15 @@ input[type="range"]::-moz-range-thumb {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.order-qty-stepper {
+  flex-shrink: 0;
+}
+.order-summary-item-price {
+  flex-shrink: 0;
+  min-width: 44px;
+  text-align: right;
+  color: #E29D30;
 }
 .order-summary-total {
   display: flex;
@@ -1768,8 +1779,45 @@ input[type="range"]::-moz-range-thumb {
 }
 .cart-item-actions {
   display: flex;
+  align-items: center;
   gap: 8px;
   margin-top: 6px;
+  flex-wrap: wrap;
+}
+.cart-item-bottom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 4px;
+}
+.qty-stepper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(226,157,48,0.3);
+  padding: 2px 4px;
+}
+.qty-btn {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #E29D30;
+  font-size: 13px;
+  line-height: 1;
+  transition: opacity 0.2s ease;
+}
+.qty-btn:hover {
+  opacity: 0.7;
+}
+.qty-value {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 12px;
+  color: #f5f0e8;
+  min-width: 14px;
+  text-align: center;
 }
 .fav-remove-btn,
 .fav-add-cart-btn {
@@ -1863,4 +1911,43 @@ input[type="range"]::-moz-range-thumb {
 }
 .checkout-btn:hover {
   background: #f0b84a;
+}
+
+/* ==================== TOAST NOTIFICATIONS ==================== */
+.mesir-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: #E29D30;
+  color: #390000;
+  padding: 13px 28px;
+  border-radius: 3px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 300;
+  white-space: nowrap;
+}
+.mesir-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+@media (max-width: 480px) {
+  .mesir-toast {
+    left: 16px;
+    right: 16px;
+    transform: translateY(16px);
+    text-align: center;
+    white-space: normal;
+  }
+  .mesir-toast.show {
+    transform: translateY(0);
+  }
 }

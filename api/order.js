@@ -45,8 +45,22 @@ module.exports = async (req, res) => {
     // Escape characters that break Telegram's MarkdownV2 parser.
     const esc = (s) => String(s).replace(/([_*\[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
 
+    // Russian pluralization for "штука/штуки/штук".
+    function pluralRu(n, one, few, many) {
+      const mod10 = n % 10;
+      const mod100 = n % 100;
+      if (mod10 === 1 && mod100 !== 11) return one;
+      if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
+      return many;
+    }
+
     const itemsList = items
-      .map((i) => `• ${esc(i.brand)} ${esc(i.name)} \\(${esc(i.size)}\\) — $${esc(i.price)}`)
+      .map((i) => {
+        const qty = i.quantity || 1;
+        const lineTotal = i.price * qty;
+        const qtyWord = pluralRu(qty, 'штука', 'штуки', 'штук');
+        return `• ${esc(i.brand)} ${esc(i.name)} \\(${esc(i.size)}\\)  ${esc(qty)} ${qtyWord} — общая сумма: $${esc(lineTotal)}`;
+      })
       .join('\n');
 
     const text =

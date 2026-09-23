@@ -228,6 +228,14 @@ if (heroText && heroImageWrap) {
   if (heroNextBtn) heroNextBtn.addEventListener('click', nextSlide);
   if (heroPrevBtn) heroPrevBtn.addEventListener('click', prevSlide);
 
+  const heroDiscoverBtn = document.getElementById('hero-discover-btn');
+  if (heroDiscoverBtn) {
+    heroDiscoverBtn.addEventListener('click', () => {
+      const catalogSection = document.getElementById('catalog');
+      if (catalogSection) catalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+
   initHero = function initHero() {
     renderHeroContent();
     setInterval(nextSlide, 6000);
@@ -750,12 +758,36 @@ if (productGrid) {
 
   function toggleFavorite(id) {
     const idx = state.favorites.indexOf(id);
+    const isAdding = idx === -1;
     if (idx > -1) state.favorites.splice(idx, 1); else state.favorites.push(id);
     persistFavorites();
     renderProductGridInternal();
     renderFavoritesPanel();
     updateBadges();
+    if (isAdding) showToast(t('toast_added_to_favorites'));
   }
+}
+
+// =======================================================
+// TOAST NOTIFICATIONS (brief feedback for add-to-cart / add-to-favorites)
+// =======================================================
+let toastTimer = null;
+function showToast(message) {
+  let toastEl = document.getElementById('mesir-toast');
+  if (!toastEl) {
+    toastEl = document.createElement('div');
+    toastEl.id = 'mesir-toast';
+    toastEl.className = 'mesir-toast';
+    document.body.appendChild(toastEl);
+  }
+  toastEl.textContent = message;
+  // Force a reflow so re-triggering the animation works even if a toast
+  // is already showing (e.g. clicking "Add to Cart" twice quickly).
+  toastEl.classList.remove('show');
+  void toastEl.offsetWidth;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2200);
 }
 
 // =======================================================
@@ -781,8 +813,25 @@ if (cartBtn) cartBtn.addEventListener('click', openCart);
 if (cartCloseBtn) cartCloseBtn.addEventListener('click', closeCart);
 if (cartBackdrop) cartBackdrop.addEventListener('click', closeCart);
 
-function addToCart(product) {
-  state.cart.push(product);
+function addToCart(product, quantity = 1) {
+  const existing = state.cart.find(item => item.id === product.id);
+  if (existing) {
+    existing.quantity += quantity;
+  } else {
+    state.cart.push({ ...product, quantity });
+  }
+  persistCart();
+  renderCart();
+  updateBadges();
+  showToast(t('toast_added_to_cart'));
+}
+
+function updateCartQuantity(index, newQuantity) {
+  if (newQuantity < 1) {
+    removeFromCart(index);
+    return;
+  }
+  state.cart[index].quantity = newQuantity;
   persistCart();
   renderCart();
   updateBadges();
@@ -820,9 +869,18 @@ function renderCart() {
           <p class="cart-item-brand">${item.brand}</p>
           <p class="cart-item-name">${item.name}</p>
           <p class="cart-item-size">${item.size}</p>
-          <p class="cart-item-price">$${item.price}</p>
+          <div class="cart-item-bottom-row">
+            <div class="qty-stepper">
+              <button class="qty-btn qty-minus" type="button" aria-label="Decrease quantity">−</button>
+              <span class="qty-value">${item.quantity}</span>
+              <button class="qty-btn qty-plus" type="button" aria-label="Increase quantity">+</button>
+            </div>
+            <p class="cart-item-price">$${item.price * item.quantity}</p>
+          </div>
         </div>
       `;
+      row.querySelector('.qty-minus').addEventListener('click', () => updateCartQuantity(index, item.quantity - 1));
+      row.querySelector('.qty-plus').addEventListener('click', () => updateCartQuantity(index, item.quantity + 1));
       const removeBtn = document.createElement('button');
       removeBtn.className = 'cart-remove-btn';
       removeBtn.setAttribute('aria-label', t('fav_remove'));
@@ -832,7 +890,7 @@ function renderCart() {
       cartItemsEl.appendChild(row);
     });
 
-    const total = state.cart.reduce((s, p) => s + p.price, 0);
+    const total = state.cart.reduce((s, p) => s + p.price * p.quantity, 0);
     if (cartTotalEl) cartTotalEl.textContent = `$${total}`;
     if (cartFooterEl) cartFooterEl.classList.remove('hidden');
   }
@@ -840,8 +898,9 @@ function renderCart() {
 
 function updateBadges() {
   if (cartCountBadge) {
-    cartCountBadge.textContent = state.cart.length;
-    cartCountBadge.classList.toggle('hidden', state.cart.length === 0);
+    const totalQty = state.cart.reduce((s, p) => s + p.quantity, 0);
+    cartCountBadge.textContent = totalQty;
+    cartCountBadge.classList.toggle('hidden', totalQty === 0);
   }
   if (favCountBadge) {
     favCountBadge.textContent = state.favorites.length;
@@ -893,6 +952,9 @@ function renderFavoritesPanel() {
   }
 
   favProducts.forEach(item => {
+    const inCart = state.cart.some(c => c.id === item.id);
+    let selectedQty = 1;
+
     const row = document.createElement('div');
     row.className = 'cart-item';
     row.innerHTML = `
@@ -904,7 +966,12 @@ function renderFavoritesPanel() {
         <p class="cart-item-price">$${item.price}</p>
         <div class="cart-item-actions">
           <button class="fav-remove-btn" type="button">${t('fav_remove')}</button>
-          <button class="fav-add-cart-btn" type="button">${t('fav_add_cart')}</button>
+          <div class="qty-stepper fav-qty-stepper ${inCart ? 'hidden' : ''}">
+            <button class="qty-btn qty-minus" type="button" aria-label="Decrease quantity">−</button>
+            <span class="qty-value">1</span>
+            <button class="qty-btn qty-plus" type="button" aria-label="Increase quantity">+</button>
+          </div>
+          <button class="fav-add-cart-btn" type="button">${inCart ? t('go_to_cart') : t('fav_add_cart')}</button>
         </div>
       </div>
     `;
@@ -918,8 +985,27 @@ function renderFavoritesPanel() {
         window.renderProductGrid();
       }
     });
+
+    const qtyValueEl = row.querySelector('.qty-value');
+    row.querySelector('.qty-minus').addEventListener('click', () => {
+      selectedQty = Math.max(1, selectedQty - 1);
+      qtyValueEl.textContent = selectedQty;
+    });
+    row.querySelector('.qty-plus').addEventListener('click', () => {
+      selectedQty += 1;
+      qtyValueEl.textContent = selectedQty;
+    });
+
     row.querySelector('.fav-add-cart-btn').addEventListener('click', () => {
-      addToCart(item);
+      if (state.cart.some(c => c.id === item.id)) {
+        // Already in the cart — this button's job now is quick navigation,
+        // not adding another copy (use the cart's own +/- for that).
+        closeFavorites();
+        openCart();
+      } else {
+        addToCart(item, selectedQty);
+        renderFavoritesPanel();
+      }
     });
     favItemsEl.appendChild(row);
   });
@@ -942,17 +1028,34 @@ function renderOrderSummary() {
   if (!orderSummaryEl) return;
   orderSummaryEl.innerHTML = '';
 
-  state.cart.forEach((item) => {
+  state.cart.forEach((item, index) => {
     const row = document.createElement('div');
     row.className = 'order-summary-item';
     row.innerHTML = `
       <span class="order-summary-item-name">${item.brand} ${item.name} (${item.size})</span>
-      <span>$${item.price}</span>
+      <div class="qty-stepper order-qty-stepper">
+        <button class="qty-btn qty-minus" type="button" aria-label="Decrease quantity">−</button>
+        <span class="qty-value">${item.quantity}</span>
+        <button class="qty-btn qty-plus" type="button" aria-label="Increase quantity">+</button>
+      </div>
+      <span class="order-summary-item-price">$${item.price * item.quantity}</span>
     `;
+    row.querySelector('.qty-minus').addEventListener('click', () => {
+      updateCartQuantity(index, item.quantity - 1);
+      if (state.cart.length === 0) {
+        closeOrderModal();
+      } else {
+        renderOrderSummary();
+      }
+    });
+    row.querySelector('.qty-plus').addEventListener('click', () => {
+      updateCartQuantity(index, item.quantity + 1);
+      renderOrderSummary();
+    });
     orderSummaryEl.appendChild(row);
   });
 
-  const total = state.cart.reduce((s, p) => s + p.price, 0);
+  const total = state.cart.reduce((s, p) => s + p.price * p.quantity, 0);
   const totalRow = document.createElement('div');
   totalRow.className = 'order-summary-total';
   totalRow.innerHTML = `<span>${t('cart_total')}</span><span>$${total}</span>`;
@@ -985,7 +1088,7 @@ if (orderForm) {
     const name = document.getElementById('order-name').value.trim();
     const telegram = document.getElementById('order-telegram').value.trim();
     const phone = document.getElementById('order-phone').value.trim();
-    const total = state.cart.reduce((s, p) => s + p.price, 0);
+    const total = state.cart.reduce((s, p) => s + p.price * p.quantity, 0);
 
     orderSubmitBtn.disabled = true;
     const originalLabel = orderSubmitBtn.textContent;
