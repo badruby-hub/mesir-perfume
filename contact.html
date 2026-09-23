@@ -6,7 +6,7 @@
 <title>Contact — MESIR Perfume &amp; Home Fragrance</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap">
-<link rel="preconnect" href="https://arcvxxbmhfpuilyygetv.supabase.co">
+<link rel="preconnect" href="https://YOUR-PROJECT.supabase.co">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -152,8 +152,9 @@
           <textarea class="form-textarea" id="cf-message" name="message" data-i18n-placeholder="form_message_placeholder" placeholder="Tell us how we can help..." required></textarea>
         </div>
 
-        <button type="submit" class="form-submit-btn" data-i18n="form_submit_btn">Send Message</button>
+        <button type="submit" id="contact-submit-btn" class="form-submit-btn" data-i18n="form_submit_btn">Send Message</button>
         <p id="contact-form-note" class="form-note hidden" data-i18n="form_success_note">Thank you — your message has been noted. We'll be in touch shortly.</p>
+        <p id="contact-form-error-note" class="form-note-error hidden"></p>
       </form>
     </div>
   </section>
@@ -343,15 +344,87 @@
 <script src="data.js"></script>
 <script src="script.js"></script>
 <script>
-  // Simple client-side "submission" — no backend is wired up in this
-  // static build, so we just acknowledge the message was captured.
+  // Sends the contact form to Telegram (api/contact.js), and blocks
+  // repeat submissions from this browser for 2 hours via localStorage —
+  // simple abuse guard, no server-side tracking needed for this.
+  const CONTACT_COOLDOWN_MS = 2 * 60 * 60 * 1000; // 2 hours
+  const CONTACT_STORAGE_KEY = 'mesir_contact_last_sent';
+
+  function getContactCooldownRemaining() {
+    try {
+      const last = parseInt(localStorage.getItem(CONTACT_STORAGE_KEY) || '0', 10);
+      return Math.max(0, CONTACT_COOLDOWN_MS - (Date.now() - last));
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  function formatRemaining(ms) {
+    const totalMinutes = Math.ceil(ms / 60000);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    if (hours > 0) return `${hours} ч ${minutes} мин`;
+    return `${minutes} мин`;
+  }
+
   const contactForm = document.getElementById('contact-form');
   const contactNote = document.getElementById('contact-form-note');
+  const contactErrorNote = document.getElementById('contact-form-error-note');
+  const contactSubmitBtn = document.getElementById('contact-submit-btn');
+
+  function applyContactCooldownState() {
+    const remaining = getContactCooldownRemaining();
+    if (remaining > 0) {
+      contactSubmitBtn.disabled = true;
+      contactErrorNote.textContent = `Вы уже отправляли сообщение. Попробуйте снова через ${formatRemaining(remaining)}.`;
+      contactErrorNote.classList.remove('hidden');
+      return true;
+    }
+    return false;
+  }
+
   if (contactForm) {
-    contactForm.addEventListener('submit', e => {
+    // If this browser is still in cooldown from a previous visit, reflect
+    // that immediately on page load rather than waiting for a submit attempt.
+    applyContactCooldownState();
+
+    contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      contactNote.classList.remove('hidden');
-      contactForm.reset();
+      contactErrorNote.classList.add('hidden');
+
+      if (applyContactCooldownState()) return;
+
+      const name = document.getElementById('cf-name').value.trim();
+      const email = document.getElementById('cf-email').value.trim();
+      const subject = document.getElementById('cf-subject').value.trim();
+      const message = document.getElementById('cf-message').value.trim();
+
+      contactSubmitBtn.disabled = true;
+      const originalLabel = contactSubmitBtn.textContent;
+      contactSubmitBtn.textContent = '...';
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, subject, message }),
+        });
+        if (!res.ok) throw new Error('Request failed');
+
+        try {
+          localStorage.setItem(CONTACT_STORAGE_KEY, String(Date.now()));
+        } catch (err) {
+          /* ignore storage errors (private browsing, etc.) */
+        }
+
+        contactForm.classList.add('hidden');
+        contactNote.classList.remove('hidden');
+      } catch (err) {
+        contactErrorNote.textContent = 'Что-то пошло не так. Попробуйте ещё раз позже, или напишите нам напрямую в Telegram.';
+        contactErrorNote.classList.remove('hidden');
+        contactSubmitBtn.disabled = false;
+        contactSubmitBtn.textContent = originalLabel;
+      }
     });
   }
 </script>
