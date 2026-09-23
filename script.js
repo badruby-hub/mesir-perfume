@@ -254,9 +254,13 @@ if (heroText && heroImageWrap) {
     });
   }
 
+  let heroIntervalStarted = false;
   initHero = function initHero() {
     renderHeroContent();
-    setInterval(nextSlide, 6000);
+    if (!heroIntervalStarted) {
+      heroIntervalStarted = true;
+      setInterval(nextSlide, 6000);
+    }
   };
 }
 
@@ -1150,20 +1154,27 @@ if (orderForm) {
 // =======================================================
 // Cart/badges don't depend on the product catalog, so they render
 // immediately — no flash of an empty header. The catalog, hero slider
-// and favorites panel (which looks up product details by id) wait for
-// data.js's fetch of /data/products.json + /data/slides.json, and
-// i18n.js's fetch of /data/i18n.json, to finish first.
+// and favorites panel (which look up product details by id) render
+// immediately too if a cached copy of the last successful Supabase
+// fetch is available (see i18n.js/data.js), then render again once the
+// live fetch resolves — a no-op in the common case where nothing
+// changed, and what actually brings in a fresh admin edit otherwise.
 renderCart();
 renderFavoritesPanel();
 updateBadges();
 
-(async () => {
-  await Promise.all([window.i18nReady, window.dataReady]);
+function renderCatalogAndHero() {
   if (typeof initHero === 'function') initHero();
   if (typeof renderSidebars === 'function') renderSidebars();
   if (typeof renderProductGridInternal === 'function') renderProductGridInternal();
-  // Re-render now that `products` is actually populated, so any
-  // already-favorited items show their real name/image/price instead
-  // of nothing.
   renderFavoritesPanel();
+}
+
+if (window.__cachedSiteData) {
+  renderCatalogAndHero();
+}
+
+(async () => {
+  await Promise.all([window.i18nReady, window.dataReady]);
+  renderCatalogAndHero();
 })();

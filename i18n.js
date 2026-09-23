@@ -116,7 +116,47 @@ function fetchSiteDataFromSupabase() {
     });
 }
 
-window.__siteDataPromise = window.__siteDataPromise || fetchSiteDataFromSupabase();
+// ---- Cache the last successful fetch, so a repeat visit can paint the
+// CORRECT language instantly instead of flashing the English fallback
+// text baked into the HTML while a fresh network request is in flight.
+// The real fetch still always happens in the background to pick up any
+// content the admin has since published — this is a "stale, then
+// revalidate" pattern, not a replacement for the live fetch. ----
+const SITE_DATA_CACHE_KEY = 'mesir_site_data_cache';
+
+function readSiteDataCache() {
+  try {
+    const raw = localStorage.getItem(SITE_DATA_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function writeSiteDataCache(data) {
+  try {
+    localStorage.setItem(SITE_DATA_CACHE_KEY, JSON.stringify(data));
+  } catch (e) {
+    /* ignore quota / private-mode errors */
+  }
+}
+
+// Exposed globally so data.js can reuse the SAME cached blob for
+// products/slides/filters, instead of each file reading localStorage
+// separately.
+window.__cachedSiteData = readSiteDataCache();
+
+if (window.__cachedSiteData) {
+  translations = window.__cachedSiteData.i18n || translations;
+  const cachedLabels = window.__cachedSiteData.labels || {};
+  countryLabels = cachedLabels.countryLabels || countryLabels;
+  availabilityLabels = cachedLabels.availabilityLabels || availabilityLabels;
+}
+
+window.__siteDataPromise = window.__siteDataPromise || fetchSiteDataFromSupabase().then((data) => {
+  writeSiteDataCache(data);
+  return data;
+});
 
 window.i18nReady = (async () => {
   try {
@@ -132,7 +172,17 @@ window.i18nReady = (async () => {
 
 document.addEventListener('DOMContentLoaded', async () => {
   document.documentElement.setAttribute('lang', currentLang);
+
+  // Paint immediately with cached (almost certainly still-correct) text
+  // if we have it — no need to wait for the network for this first pass.
+  if (window.__cachedSiteData) {
+    applyStaticTranslations();
+  }
+
   await window.i18nReady;
+  // Re-apply with the freshly-fetched data. If nothing changed since the
+  // cache was written, this is visually a no-op; if the admin published
+  // an edit, this is what brings it in.
   applyStaticTranslations();
 
   document.querySelectorAll('.lang-btn').forEach(btn => {
