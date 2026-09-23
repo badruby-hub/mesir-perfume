@@ -1,11 +1,23 @@
 // admin/admin.js
 //
-// All admin state lives in memory here and is loaded fresh from GitHub
+// All admin state lives in memory here and is loaded fresh from Supabase
 // (via /api/admin/data) on login. Add/edit/delete across Products, Slides
 // and Texts only update this in-memory copy and mark that section
-// "dirty" — nothing is committed to GitHub until the admin explicitly
+// "dirty" — nothing is saved to Supabase until the admin explicitly
 // clicks "Опубликовать" in the header, which then saves every dirty
 // section in one go.
+
+// Any <img> that fails to load gets swapped to a transparent 1x1 pixel
+// instead of showing the browser's native "broken image" icon — the CSS
+// gray pulse background on the <img> itself (see admin.css) then just
+// stays visible on its own. 'error' doesn't bubble, hence capture phase.
+document.addEventListener('error', (e) => {
+  const el = e.target;
+  if (el && el.tagName === 'IMG' && !el.dataset.fallbackApplied) {
+    el.dataset.fallbackApplied = 'true';
+    el.src = 'data:image/gif;base64,R0lGODlhAQABAIEAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAgEAAEEBAA7';
+  }
+}, true);
 
 let state = {
   products: [],

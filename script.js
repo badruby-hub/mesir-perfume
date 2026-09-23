@@ -3,6 +3,21 @@
 // survive navigation between index.html / about.html / contact.html.
 // Language state & t()/currentLang come from i18n.js, loaded first.)
 // =======================================================
+
+// Any <img> that fails to load (broken link, network hiccup, etc.) gets
+// swapped to a fully transparent 1x1 pixel instead of showing the
+// browser's native "broken image" icon — the CSS gray pulse background
+// on the <img> itself (see style.css) then just stays visible on its
+// own, giving a clean placeholder with no icon glyph on top of it.
+// 'error' doesn't bubble, so this has to listen in the capture phase.
+document.addEventListener('error', (e) => {
+  const el = e.target;
+  if (el && el.tagName === 'IMG' && !el.dataset.fallbackApplied) {
+    el.dataset.fallbackApplied = 'true';
+    el.src = 'data:image/gif;base64,R0lGODlhAQABAIEAAAAAAAAAAAAAAAAAACH5BAEAAAAALAAAAAABAAEAAAgEAAEEBAA7';
+  }
+}, true);
+
 function loadStorage(key, fallback) {
   try {
     const raw = localStorage.getItem(key);
