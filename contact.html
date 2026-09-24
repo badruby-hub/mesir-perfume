@@ -27,10 +27,16 @@
     </nav>
 
     <div class="header-icons">
-      <div class="lang-switch">
-        <button class="lang-btn" data-lang="en" type="button">EN</button>
-        <button class="lang-btn" data-lang="ru" type="button">RU</button>
-        <button class="lang-btn" data-lang="hy" type="button">HY</button>
+      <div class="lang-dropdown" id="lang-dropdown">
+        <button class="lang-dropdown-toggle" id="lang-dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false">
+          <span class="lang-current" id="lang-current">EN</span>
+          <svg class="lang-caret" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+        <div class="lang-dropdown-menu hidden" id="lang-dropdown-menu">
+          <button class="lang-btn" data-lang="en" type="button">EN — English</button>
+          <button class="lang-btn" data-lang="ru" type="button">RU — Русский</button>
+          <button class="lang-btn" data-lang="hy" type="button">HY — Հայերեն</button>
+        </div>
       </div>
 
       <button id="search-toggle" class="icon-btn" data-i18n-aria="aria_search" aria-label="Search">

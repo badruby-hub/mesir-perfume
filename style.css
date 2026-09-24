@@ -228,26 +228,62 @@ ul {
 @media (min-width: 768px) {
   .header-icons { gap: 20px; }
 }
-.lang-switch {
+.lang-dropdown {
+  position: relative;
+}
+.lang-dropdown-toggle {
   display: flex;
   align-items: center;
-  border: 1px solid rgba(226,157,48,0.3);
-  overflow: hidden;
-}
-.lang-btn {
-  padding: 5px 10px;
+  gap: 6px;
+  padding: 6px 10px;
   font-family: 'Cinzel', Georgia, serif;
   font-size: 10px;
   letter-spacing: 0.1em;
-  color: rgba(245,240,232,0.55);
+  color: rgba(245,240,232,0.75);
+  border: 1px solid rgba(226,157,48,0.3);
   transition: all 0.25s ease;
+}
+.lang-dropdown-toggle:hover {
+  color: #E29D30;
+  border-color: #E29D30;
+}
+.lang-caret {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+.lang-dropdown.open .lang-caret {
+  transform: rotate(180deg);
+}
+.lang-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(20,0,0,0.98);
+  border: 1px solid rgba(226,157,48,0.3);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+  z-index: 60;
+  overflow: hidden;
+}
+.lang-btn {
+  padding: 8px 14px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-align: left;
+  color: rgba(245,240,232,0.6);
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 .lang-btn:hover {
   color: #E29D30;
+  background: rgba(226,157,48,0.08);
 }
 .lang-btn.active {
-  background: #E29D30;
-  color: #390000;
+  color: #E29D30;
+  background: rgba(226,157,48,0.15);
 }
 
 .icon-btn {

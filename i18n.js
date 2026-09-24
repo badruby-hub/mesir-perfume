@@ -83,10 +83,12 @@ function applyStaticTranslations() {
     el.innerHTML = t(el.getAttribute('data-i18n-html'));
   });
 
-  // Keep the two language-switch buttons (desktop + mobile) visually in sync.
+  // Keep the language-menu items and the toggle's displayed code in sync.
   document.querySelectorAll('.lang-btn').forEach(btn => {
     btn.classList.toggle('active', btn.getAttribute('data-lang') === currentLang);
   });
+  const langCurrentEl = document.getElementById('lang-current');
+  if (langCurrentEl) langCurrentEl.textContent = currentLang.toUpperCase();
 }
 
 // Fetched once at page load; script.js (and this file's own
@@ -188,6 +190,46 @@ document.addEventListener('DOMContentLoaded', async () => {
   applyStaticTranslations();
 
   document.querySelectorAll('.lang-btn').forEach(btn => {
-    btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
+    btn.addEventListener('click', () => {
+      setLanguage(btn.getAttribute('data-lang'));
+      closeLangDropdown();
+    });
   });
+
+  // Dropdown open/close: toggle on click, close on outside click or Escape.
+  const langDropdown = document.getElementById('lang-dropdown');
+  const langToggle = document.getElementById('lang-dropdown-toggle');
+  const langMenu = document.getElementById('lang-dropdown-menu');
+
+  function openLangDropdown() {
+    if (!langDropdown) return;
+    langDropdown.classList.add('open');
+    langMenu.classList.remove('hidden');
+    langToggle.setAttribute('aria-expanded', 'true');
+  }
+  function closeLangDropdown() {
+    if (!langDropdown) return;
+    langDropdown.classList.remove('open');
+    langMenu.classList.add('hidden');
+    langToggle.setAttribute('aria-expanded', 'false');
+  }
+
+  if (langToggle) {
+    langToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (langMenu.classList.contains('hidden')) {
+        openLangDropdown();
+      } else {
+        closeLangDropdown();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (langDropdown && !langDropdown.contains(e.target)) closeLangDropdown();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeLangDropdown();
+    });
+  }
 });
