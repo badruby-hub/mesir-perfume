@@ -10,9 +10,9 @@
 // time and exposes `window.i18nReady`, which script.js awaits before
 // rendering anything that calls t().
 // =======================================================
-let translations = { en: {}, ru: {} };
-let countryLabels = { en: {}, ru: {} };
-let availabilityLabels = { en: {}, ru: {} };
+let translations = { en: {}, ru: {}, hy: {} };
+let countryLabels = { en: {}, ru: {}, hy: {} };
+let availabilityLabels = { en: {}, ru: {}, hy: {} };
 
 // ---- Russian pluralization helper (1 товар / 2 товара / 5 товаров) ----
 function pluralRu(n, one, few, many) {
@@ -36,13 +36,15 @@ function itemsCountLabel(n, lang) {
 function getSavedLanguage() {
   try {
     const saved = localStorage.getItem('mesir_lang');
-    if (saved === 'en' || saved === 'ru') return saved;
+    if (saved === 'en' || saved === 'ru' || saved === 'hy') return saved;
   } catch (e) {
     /* ignore */
   }
   // Fall back to browser language, default to English.
   const browserLang = (navigator.language || '').toLowerCase();
-  return browserLang.startsWith('ru') ? 'ru' : 'en';
+  if (browserLang.startsWith('ru')) return 'ru';
+  if (browserLang.startsWith('hy')) return 'hy';
+  return 'en';
 }
 
 let currentLang = getSavedLanguage();
@@ -52,7 +54,7 @@ function t(key) {
 }
 
 function setLanguage(lang) {
-  if (lang !== 'en' && lang !== 'ru') return;
+  if (lang !== 'en' && lang !== 'ru' && lang !== 'hy') return;
   currentLang = lang;
   try {
     localStorage.setItem('mesir_lang', lang);
@@ -98,8 +100,8 @@ function applyStaticTranslations() {
 // Security restricts to read-only (see supabase/rls.sql). Writes still
 // only ever happen server-side, in api/admin/*, using the separate
 // service_role key that never reaches the browser.
-const SUPABASE_URL = 'https://arcvxxbmhfpuilyygetv.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFyY3Z4eGJtaGZwdWlseXlnZXR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNzUxNzMsImV4cCI6MjEwNTY1MTE3M30.aTxa3-fIM2wHSwJEaceeOqrI7KsNbtQxNQPEh0X_Hfw';
+const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR-ANON-OR-PUBLISHABLE-KEY';
 
 function fetchSiteDataFromSupabase() {
   return fetch(`${SUPABASE_URL}/rest/v1/site_data?select=key,value`, {

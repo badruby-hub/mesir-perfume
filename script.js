@@ -625,7 +625,8 @@ if (productGrid) {
 
     const badge = document.createElement('div');
     badge.className = 'availability-badge' + (product.availability === 'in-stock' ? ' in-stock' : '');
-    badge.textContent = availabilityLabels[currentLang][product.availability];
+    badge.textContent = (availabilityLabels[currentLang] && availabilityLabels[currentLang][product.availability])
+      || availabilityLabels.en[product.availability];
     imgArea.appendChild(badge);
 
     const favToggle = document.createElement('button');
