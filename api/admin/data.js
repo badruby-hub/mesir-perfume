@@ -11,7 +11,7 @@ const DEFAULTS = {
   slides: [],
   i18n: { en: {}, ru: {} },
   filters: { brands: [], sizes: [], countries: [] },
-  labels: { countryLabels: { en: {}, ru: {} }, availabilityLabels: { en: {}, ru: {} } },
+  labels: { countryLabels: { en: {}, ru: {} }, availabilityLabels: { en: {}, ru: {} }, categoryLabels: { en: {}, ru: {}, hy: {} } },
 };
 
 module.exports = async (req, res) => {

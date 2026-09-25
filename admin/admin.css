@@ -358,6 +358,27 @@ textarea { resize: vertical; min-height: 70px; }
   padding: 7px 10px;
 }
 
+.categories-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.category-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(226,157,48,0.08);
+}
+.category-row input {
+  font-size: 12px;
+  padding: 7px 10px;
+}
+.category-row .icon-action-btn.danger {
+  white-space: nowrap;
+}
+
 /* ==================== MODALS ==================== */
 .modal-overlay {
   position: fixed;

@@ -303,6 +303,23 @@ if (productGrid) {
     titleBlock.innerHTML = `<h2>${t('filters_title')}</h2><div class="sidebar-title-underline"></div>`;
     container.appendChild(titleBlock);
 
+    // Category options aren't a separately-curated list of raw text —
+    // each product stores a stable category KEY, and its displayed name
+    // per language lives in categoryLabels (managed in the admin's
+    // "Категории" tab), same pattern as country/availability labels.
+    const categoriesInUse = [...new Set(products.map(p => p.category).filter(Boolean))].sort();
+    if (categoriesInUse.length > 0) {
+      container.appendChild(
+        buildCollapsibleCheckboxSection(
+          t('filter_category'),
+          categoriesInUse,
+          state.filters.categories,
+          toggleCategory,
+          c => (categoryLabels[currentLang] && categoryLabels[currentLang][c]) || (categoryLabels.en && categoryLabels.en[c]) || c
+        )
+      );
+    }
+
     container.appendChild(buildCheckboxSection(t('filter_brand'), brands, state.filters.brands, toggleBrand));
     container.appendChild(buildSizeSection());
     container.appendChild(buildPriceSection());
@@ -315,15 +332,6 @@ if (productGrid) {
         c => (countryLabels[currentLang] && countryLabels[currentLang][c]) || c
       )
     );
-    // Category options aren't a separately-curated list (unlike brands/
-    // countries) — they're computed live from whatever categories are
-    // actually assigned to products right now, so the filter can never
-    // drift out of sync with real catalog data. The admin "creates" a
-    // category simply by typing it on a product in the admin panel.
-    const categoriesInUse = [...new Set(products.map(p => p.category).filter(Boolean))].sort();
-    if (categoriesInUse.length > 0) {
-      container.appendChild(buildCheckboxSection(t('filter_category'), categoriesInUse, state.filters.categories, toggleCategory));
-    }
     container.appendChild(buildAvailabilitySection());
 
     const clearBtn = document.createElement('button');
@@ -344,6 +352,56 @@ if (productGrid) {
 
     const itemsWrap = document.createElement('div');
     itemsWrap.className = 'filter-section-items';
+
+    items.forEach(item => {
+      const checked = selectedArr.includes(item);
+      const row = document.createElement('label');
+      row.className = 'checkbox-row';
+
+      const box = document.createElement('div');
+      box.className = 'checkbox-box' + (checked ? ' checked' : '');
+      if (checked) {
+        box.innerHTML = `<svg width="8" height="8" fill="none" stroke="#390000" stroke-width="2.5" viewBox="0 0 10 10"><polyline points="2 5 4.5 7.5 8.5 2.5"></polyline></svg>`;
+      }
+
+      const label = document.createElement('span');
+      label.className = 'checkbox-label' + (checked ? ' checked' : '');
+      label.textContent = labelFn ? labelFn(item) : item;
+
+      row.appendChild(box);
+      row.appendChild(label);
+      row.addEventListener('click', () => toggleFn(item));
+
+      itemsWrap.appendChild(row);
+    });
+
+    section.appendChild(itemsWrap);
+    return section;
+  }
+
+  // Same as buildCheckboxSection, but the whole section collapses behind
+  // a clickable header (accordion), like the language switcher. Open/
+  // closed state is kept in a module-level variable so it survives the
+  // full sidebar rebuild that happens on every filter change.
+  let categorySectionOpen = false;
+  function buildCollapsibleCheckboxSection(title, items, selectedArr, toggleFn, labelFn) {
+    const section = document.createElement('div');
+    section.className = 'filter-section filter-section-collapsible' + (categorySectionOpen ? ' open' : '');
+
+    const heading = document.createElement('button');
+    heading.type = 'button';
+    heading.className = 'filter-section-title filter-section-toggle';
+    heading.innerHTML = `<span>${title}</span><svg class="filter-caret" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+    section.appendChild(heading);
+
+    const itemsWrap = document.createElement('div');
+    itemsWrap.className = 'filter-section-items' + (categorySectionOpen ? '' : ' hidden');
+
+    heading.addEventListener('click', () => {
+      categorySectionOpen = !categorySectionOpen;
+      section.classList.toggle('open', categorySectionOpen);
+      itemsWrap.classList.toggle('hidden', !categorySectionOpen);
+    });
 
     items.forEach(item => {
       const checked = selectedArr.includes(item);

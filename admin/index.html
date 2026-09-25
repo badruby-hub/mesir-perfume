@@ -27,6 +27,7 @@
     <nav class="admin-tabs">
       <button class="admin-tab active" data-tab="products">Товары</button>
       <button class="admin-tab" data-tab="slides">Hero-слайды</button>
+      <button class="admin-tab" data-tab="categories">Категории</button>
       <button class="admin-tab" data-tab="texts">Тексты сайта</button>
     </nav>
     <div class="header-actions">
@@ -71,6 +72,16 @@
         <button id="add-slide-btn" class="btn-primary">+ Добавить слайд</button>
       </div>
       <div id="slides-list" class="slides-list"></div>
+    </section>
+
+    <!-- ---------- CATEGORIES TAB ---------- -->
+    <section id="tab-categories" class="admin-tab-panel hidden">
+      <div class="panel-header">
+        <h2>Категории <span id="categories-count" class="count-badge"></span></h2>
+        <button id="add-category-btn" class="btn-primary">+ Добавить категорию</button>
+      </div>
+      <p class="panel-hint">Название категории на трёх языках. Пустое поле HY/EN — сайт покажет русский вариант вместо него, пока не заполнено.</p>
+      <div id="categories-list" class="categories-list"></div>
     </section>
 
     <!-- ---------- TEXTS TAB ---------- -->
@@ -126,9 +137,10 @@
         </select>
       </div>
       <div class="field">
-        <label>Категория (например: Духи, Диффузор, Ароматизатор) — необязательно</label>
-        <input type="text" id="pf-category" list="pf-category-list" placeholder="Духи">
-        <datalist id="pf-category-list"></datalist>
+        <label>Категория</label>
+        <select id="pf-category">
+          <option value="">— без категории —</option>
+        </select>
       </div>
       <div class="field">
         <label>Фото с компьютера</label>

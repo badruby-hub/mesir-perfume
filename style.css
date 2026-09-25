@@ -808,6 +808,25 @@ ul {
   text-transform: uppercase;
   color: rgba(226,157,48,0.6);
 }
+
+/* Collapsible variant (category filter) — the title becomes a clickable
+   toggle button with a caret, matching the language-switcher pattern. */
+.filter-section-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background: transparent;
+  cursor: pointer;
+}
+.filter-caret {
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+  color: rgba(226,157,48,0.6);
+}
+.filter-section-collapsible.open .filter-caret {
+  transform: rotate(180deg);
+}
 .filter-section-items {
   display: flex;
   flex-direction: column;

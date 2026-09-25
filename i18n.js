@@ -13,6 +13,7 @@
 let translations = { en: {}, ru: {}, hy: {} };
 let countryLabels = { en: {}, ru: {}, hy: {} };
 let availabilityLabels = { en: {}, ru: {}, hy: {} };
+let categoryLabels = { en: {}, ru: {}, hy: {} };
 
 // ---- Russian pluralization helper (1 товар / 2 товара / 5 товаров) ----
 function pluralRu(n, one, few, many) {
@@ -102,8 +103,8 @@ function applyStaticTranslations() {
 // Security restricts to read-only (see supabase/rls.sql). Writes still
 // only ever happen server-side, in api/admin/*, using the separate
 // service_role key that never reaches the browser.
-const SUPABASE_URL = 'https://arcvxxbmhfpuilyygetv.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFyY3Z4eGJtaGZwdWlseXlnZXR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNzUxNzMsImV4cCI6MjEwNTY1MTE3M30.aTxa3-fIM2wHSwJEaceeOqrI7KsNbtQxNQPEh0X_Hfw';
+const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR-ANON-OR-PUBLISHABLE-KEY';
 
 function fetchSiteDataFromSupabase() {
   return fetch(`${SUPABASE_URL}/rest/v1/site_data?select=key,value`, {
@@ -155,6 +156,7 @@ if (window.__cachedSiteData) {
   const cachedLabels = window.__cachedSiteData.labels || {};
   countryLabels = cachedLabels.countryLabels || countryLabels;
   availabilityLabels = cachedLabels.availabilityLabels || availabilityLabels;
+  categoryLabels = cachedLabels.categoryLabels || categoryLabels;
 }
 
 window.__siteDataPromise = window.__siteDataPromise || fetchSiteDataFromSupabase().then((data) => {
@@ -169,6 +171,7 @@ window.i18nReady = (async () => {
     const labels = all.labels || {};
     countryLabels = labels.countryLabels || countryLabels;
     availabilityLabels = labels.availabilityLabels || availabilityLabels;
+    categoryLabels = labels.categoryLabels || categoryLabels;
   } catch (err) {
     console.error('Failed to load translations:', err);
   }

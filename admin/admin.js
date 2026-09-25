@@ -27,7 +27,7 @@ let state = {
 };
 
 // Tracks which top-level sections have unpublished changes.
-const dirty = { products: false, slides: false, i18n: false };
+const dirty = { products: false, slides: false, i18n: false, labels: false };
 
 function markDirty(type) {
   dirty[type] = true;
@@ -35,14 +35,14 @@ function markDirty(type) {
 }
 
 function updateDirtyIndicator() {
-  const anyDirty = dirty.products || dirty.slides || dirty.i18n;
+  const anyDirty = dirty.products || dirty.slides || dirty.i18n || dirty.labels;
   document.getElementById('dirty-indicator').classList.toggle('hidden', !anyDirty);
 }
 
 // Warn before leaving the page (closing tab, navigating away) if there
 // are unpublished changes, so an admin doesn't lose work by accident.
 window.addEventListener('beforeunload', (e) => {
-  if (dirty.products || dirty.slides || dirty.i18n) {
+  if (dirty.products || dirty.slides || dirty.i18n || dirty.labels) {
     e.preventDefault();
     e.returnValue = '';
   }
@@ -96,7 +96,7 @@ loginForm.addEventListener('submit', async (e) => {
 });
 
 logoutBtn.addEventListener('click', async () => {
-  if (dirty.products || dirty.slides || dirty.i18n) {
+  if (dirty.products || dirty.slides || dirty.i18n || dirty.labels) {
     if (!confirm('Есть неопубликованные изменения — они будут потеряны. Выйти всё равно?')) return;
   }
   await fetch('/api/admin/logout', { method: 'POST' });
@@ -123,7 +123,7 @@ function showStatus(message, type) {
 // LOAD DATA
 // =======================================================
 async function loadAllData() {
-  showStatus('Загрузка данных из GitHub...', 'loading');
+  showStatus('Загрузка данных из Supabase...', 'loading');
   try {
     const res = await fetch('/api/admin/data');
     if (!res.ok) throw new Error('Failed to load');
@@ -131,18 +131,20 @@ async function loadAllData() {
     dirty.products = false;
     dirty.slides = false;
     dirty.i18n = false;
+    dirty.labels = false;
     updateDirtyIndicator();
     globalStatus.classList.add('hidden');
     renderProducts();
     renderSlides();
+    renderCategories();
     renderTexts();
   } catch (err) {
-    showStatus('Не удалось загрузить данные из GitHub. Проверьте настройки GITHUB_TOKEN/GITHUB_REPO.', 'error');
+    showStatus('Не удалось загрузить данные из Supabase. Проверьте настройки SUPABASE_URL/SUPABASE_SERVICE_ROLE_KEY.', 'error');
   }
 }
 
 // =======================================================
-// PUBLISH — the only place that actually commits to GitHub
+// PUBLISH — the only place that actually commits to Supabase
 // =======================================================
 async function saveType(type, data, message) {
   const res = await fetch('/api/admin/save', {
@@ -159,6 +161,7 @@ document.getElementById('publish-btn').addEventListener('click', async () => {
   if (dirty.products) toPublish.push('products');
   if (dirty.slides) toPublish.push('slides');
   if (dirty.i18n) toPublish.push('i18n');
+  if (dirty.labels) toPublish.push('labels');
 
   if (toPublish.length === 0) {
     showStatus('Нет несохранённых изменений.', 'success');
@@ -330,14 +333,24 @@ function openProductForm(id) {
   form.reset();
   document.getElementById('pf-upload-status').textContent = '';
   document.getElementById('pf-upload-status').className = 'upload-status';
+  ensureCategoryLabelsShape();
   const product = id ? state.products.find((p) => p.id === id) : null;
 
-  // Populate the category datalist from whatever categories are already
-  // in use across products, so the admin sees existing options while
-  // typing rather than accidentally creating near-duplicates.
-  const categoryList = document.getElementById('pf-category-list');
-  const categoriesInUse = [...new Set(state.products.map((p) => p.category).filter(Boolean))].sort();
-  categoryList.innerHTML = categoriesInUse.map((c) => `<option value="${escapeAttr(c)}"></option>`).join('');
+  // Populate the category dropdown from the managed category list (RU
+  // label shown, since that's this admin's working language) — plus,
+  // if this product's current category isn't in that list at all (e.g.
+  // an older product from before categories had proper labels), add it
+  // as a fallback option so its assignment isn't silently lost.
+  const categorySelect = document.getElementById('pf-category');
+  const cl = state.labels.categoryLabels;
+  const slugs = new Set([...Object.keys(cl.ru), ...Object.keys(cl.en), ...Object.keys(cl.hy)]);
+  if (product && product.category) slugs.add(product.category);
+  const options = ['<option value="">— без категории —</option>'];
+  [...slugs].sort().forEach((slug) => {
+    const label = cl.ru[slug] || cl.en[slug] || slug;
+    options.push(`<option value="${escapeAttr(slug)}">${escapeAttr(label)}</option>`);
+  });
+  categorySelect.innerHTML = options.join('');
 
   document.getElementById('product-modal-title').textContent = product ? 'Изменить товар' : 'Добавить товар';
   document.getElementById('pf-id').value = product ? product.id : '';
@@ -347,7 +360,7 @@ function openProductForm(id) {
   document.getElementById('pf-size').value = product ? product.size : '';
   document.getElementById('pf-country').value = product ? product.country : '';
   document.getElementById('pf-availability').value = product ? product.availability : 'in-stock';
-  document.getElementById('pf-category').value = product && product.category ? product.category : '';
+  categorySelect.value = product && product.category ? product.category : '';
   document.getElementById('pf-image').value = product ? product.image : '';
   document.getElementById('pf-desc-en').value = product ? product.description.en : '';
   document.getElementById('pf-desc-ru').value = product ? product.description.ru : '';
@@ -514,6 +527,68 @@ document.getElementById('slide-form').addEventListener('submit', (e) => {
 // =======================================================
 // SITE TEXTS
 // =======================================================
+// =======================================================
+// CATEGORIES (labels.categoryLabels — same 3-language pattern as
+// countryLabels/availabilityLabels, but admin-manageable since, unlike
+// countries, categories are entirely defined by this shop)
+// =======================================================
+function ensureCategoryLabelsShape() {
+  state.labels = state.labels || {};
+  state.labels.categoryLabels = state.labels.categoryLabels || { en: {}, ru: {}, hy: {} };
+  state.labels.categoryLabels.en = state.labels.categoryLabels.en || {};
+  state.labels.categoryLabels.ru = state.labels.categoryLabels.ru || {};
+  state.labels.categoryLabels.hy = state.labels.categoryLabels.hy || {};
+}
+
+function renderCategories() {
+  ensureCategoryLabelsShape();
+  const list = document.getElementById('categories-list');
+  list.innerHTML = '';
+
+  const cl = state.labels.categoryLabels;
+  const slugs = Object.keys(cl.ru).length ? Object.keys(cl.ru) : Object.keys(cl.en);
+  document.getElementById('categories-count').textContent = `(${slugs.length})`;
+
+  slugs.forEach((slug) => {
+    const row = document.createElement('div');
+    row.className = 'category-row';
+    row.innerHTML = `
+      <input type="text" data-lang="ru" placeholder="RU — Духи" value="${escapeAttr(cl.ru[slug] || '')}">
+      <input type="text" data-lang="en" placeholder="EN — Perfume" value="${escapeAttr(cl.en[slug] || '')}">
+      <input type="text" data-lang="hy" placeholder="HY — Օծանելիք" value="${escapeAttr(cl.hy[slug] || '')}">
+      <button class="icon-action-btn danger" type="button">Удалить</button>
+    `;
+    row.querySelectorAll('input[data-lang]').forEach((input) => {
+      input.addEventListener('input', () => {
+        state.labels.categoryLabels[input.dataset.lang][slug] = input.value;
+        markDirty('labels');
+      });
+    });
+    row.querySelector('.icon-action-btn.danger').addEventListener('click', () => {
+      askConfirm('Удалить эту категорию? (Товары, у которых она стояла, останутся без категории после публикации.)', () => {
+        delete state.labels.categoryLabels.en[slug];
+        delete state.labels.categoryLabels.ru[slug];
+        delete state.labels.categoryLabels.hy[slug];
+        markDirty('labels');
+        renderCategories();
+      });
+    });
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('add-category-btn').addEventListener('click', () => {
+  ensureCategoryLabelsShape();
+  // A stable, never-reused machine key — display text can be freely
+  // edited afterward without breaking which products belong to it.
+  const slug = `cat-${Date.now()}`;
+  state.labels.categoryLabels.en[slug] = '';
+  state.labels.categoryLabels.ru[slug] = '';
+  state.labels.categoryLabels.hy[slug] = '';
+  markDirty('labels');
+  renderCategories();
+});
+
 function renderTexts() {
   const list = document.getElementById('texts-list');
   list.innerHTML = '';
