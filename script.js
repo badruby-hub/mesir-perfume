@@ -593,7 +593,7 @@ if (productGrid) {
     const description = product.description[currentLang] || product.description.en;
     const notes = product.notes[currentLang] || product.notes.en;
 
-    const card = document.createElement('div');
+    const card = document.createElement('article');
     card.className = 'product-card' + (isHovered ? ' hovered' : '');
     card.addEventListener('mouseenter', () => {
       state.hoveredProductId = product.id;
@@ -702,7 +702,11 @@ if (productGrid) {
     } else {
       productGrid.classList.remove('hidden');
       if (noResultsEl) noResultsEl.classList.add('hidden');
-      pageItems.forEach(p => productGrid.appendChild(buildProductCard(p)));
+      pageItems.forEach(p => {
+        const li = document.createElement('li');
+        li.appendChild(buildProductCard(p));
+        productGrid.appendChild(li);
+      });
     }
 
     if (desktopItemCount) desktopItemCount.textContent = itemsCountLabel(filtered.length, currentLang);
@@ -872,7 +876,7 @@ function renderCart() {
   cartItemsEl.innerHTML = '';
 
   if (state.cart.length === 0) {
-    const empty = document.createElement('div');
+    const empty = document.createElement('li');
     empty.className = 'cart-empty';
     empty.innerHTML = `
       <svg width="32" height="32" fill="none" stroke="rgba(226,157,48,0.3)" stroke-width="1" viewBox="0 0 24 24">
@@ -884,7 +888,7 @@ function renderCart() {
     if (cartFooterEl) cartFooterEl.classList.add('hidden');
   } else {
     state.cart.forEach((item, index) => {
-      const row = document.createElement('div');
+      const row = document.createElement('li');
       row.className = 'cart-item';
       row.innerHTML = `
         <img src="${item.image}" alt="${item.name}" class="cart-item-img">
@@ -962,7 +966,7 @@ function renderFavoritesPanel() {
   );
 
   if (favProducts.length === 0) {
-    const empty = document.createElement('div');
+    const empty = document.createElement('li');
     empty.className = 'cart-empty';
     empty.innerHTML = `
       <svg width="32" height="32" fill="none" stroke="rgba(226,157,48,0.3)" stroke-width="1" viewBox="0 0 24 24">
@@ -978,7 +982,7 @@ function renderFavoritesPanel() {
     const inCart = state.cart.some(c => c.id === item.id);
     let selectedQty = 1;
 
-    const row = document.createElement('div');
+    const row = document.createElement('li');
     row.className = 'cart-item';
     row.innerHTML = `
       <img src="${item.image}" alt="${item.name}" class="cart-item-img">
@@ -1164,11 +1168,57 @@ renderCart();
 renderFavoritesPanel();
 updateBadges();
 
+// JSON-LD structured data (Schema.org Product) so search engines can show
+// price/availability directly in results. Regenerated whenever the
+// underlying catalog data actually changes (not on every filter/page
+// click — the full catalog doesn't change just because the visible
+// subset does).
+function injectProductStructuredData() {
+  const grid = document.getElementById('product-grid');
+  if (!grid || !products || products.length === 0) return;
+
+  const existing = document.getElementById('ld-products');
+  if (existing) existing.remove();
+
+  const itemListElement = products.map((p, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    item: {
+      '@type': 'Product',
+      name: `${p.brand} ${p.name}`,
+      image: p.image,
+      description: (p.description && (p.description.en || p.description.ru)) || '',
+      brand: { '@type': 'Brand', name: p.brand },
+      offers: {
+        '@type': 'Offer',
+        priceCurrency: 'USD',
+        price: p.price,
+        availability: p.availability === 'in-stock'
+          ? 'https://schema.org/InStock'
+          : 'https://schema.org/PreOrder',
+      },
+    },
+  }));
+
+  const ld = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement,
+  };
+
+  const script = document.createElement('script');
+  script.type = 'application/ld+json';
+  script.id = 'ld-products';
+  script.textContent = JSON.stringify(ld);
+  document.head.appendChild(script);
+}
+
 function renderCatalogAndHero() {
   if (typeof initHero === 'function') initHero();
   if (typeof renderSidebars === 'function') renderSidebars();
   if (typeof renderProductGridInternal === 'function') renderProductGridInternal();
   renderFavoritesPanel();
+  injectProductStructuredData();
 }
 
 if (window.__cachedSiteData) {

@@ -10,7 +10,7 @@
 </head>
 <body>
 
-
+<!-- ============ LOGIN SCREEN ============ -->
 <div id="login-screen" class="login-screen">
   <form id="login-form" class="login-form">
     <h1 class="login-title">MESIR Admin</h1>
@@ -20,7 +20,7 @@
   </form>
 </div>
 
-
+<!-- ============ ADMIN APP ============ -->
 <div id="admin-app" class="admin-app hidden">
   <header class="admin-header">
     <h1 class="admin-logo">MESIR <span>Admin</span></h1>
@@ -39,7 +39,7 @@
   <main class="admin-main">
     <div id="global-status" class="global-status hidden"></div>
 
-  
+    <!-- ---------- PRODUCTS TAB ---------- -->
     <section id="tab-products" class="admin-tab-panel">
       <div class="panel-header">
         <h2>Товары <span id="products-count" class="count-badge"></span></h2>
@@ -63,7 +63,7 @@
       </div>
     </section>
 
-   
+    <!-- ---------- SLIDES TAB ---------- -->
     <section id="tab-slides" class="admin-tab-panel hidden">
       <div class="panel-header">
         <h2>Hero-слайды <span id="slides-count" class="count-badge"></span></h2>
@@ -72,7 +72,7 @@
       <div id="slides-list" class="slides-list"></div>
     </section>
 
-
+    <!-- ---------- TEXTS TAB ---------- -->
     <section id="tab-texts" class="admin-tab-panel hidden">
       <div class="panel-header">
         <h2>Тексты сайта</h2>
@@ -83,7 +83,7 @@
   </main>
 </div>
 
-
+<!-- ============ PRODUCT FORM MODAL ============ -->
 <div id="product-modal" class="modal-overlay hidden">
   <div class="modal-backdrop"></div>
   <div class="modal-panel">
@@ -164,6 +164,7 @@
   </div>
 </div>
 
+<!-- ============ SLIDE FORM MODAL ============ -->
 <div id="slide-modal" class="modal-overlay hidden">
   <div class="modal-backdrop"></div>
   <div class="modal-panel">
@@ -235,7 +236,7 @@
   </div>
 </div>
 
-
+<!-- ============ CONFIRM DELETE MODAL ============ -->
 <div id="confirm-modal" class="modal-overlay hidden">
   <div class="modal-backdrop"></div>
   <div class="modal-panel modal-panel-small">

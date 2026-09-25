@@ -90,7 +90,10 @@
     "form_message_label": "Message",
     "form_message_placeholder": "Tell us how we can help...",
     "form_submit_btn": "Send Message",
-    "form_success_note": "Thank you — your message has been noted. We'll be in touch shortly."
+    "form_success_note": "Thank you — your message has been noted. We'll be in touch shortly.",
+    "go_to_cart": "Go to Cart",
+    "toast_added_to_cart": "Added to cart",
+    "toast_added_to_favorites": "Added to favorites"
   },
   "ru": {
     "nav_catalog": "Каталог",
@@ -183,6 +186,9 @@
     "form_message_label": "Сообщение",
     "form_message_placeholder": "Расскажите, чем мы можем помочь...",
     "form_submit_btn": "Отправить сообщение",
-    "form_success_note": "Спасибо — ваше сообщение принято. Мы свяжемся с вами в ближайшее время."
+    "form_success_note": "Спасибо — ваше сообщение принято. Мы свяжемся с вами в ближайшее время.",
+    "go_to_cart": "Перейти в корзину",
+    "toast_added_to_cart": "Добавлено в корзину",
+    "toast_added_to_favorites": "Добавлено в избранное"
   }
 }

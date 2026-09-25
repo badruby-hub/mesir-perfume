@@ -67,6 +67,12 @@ a {
   color: inherit;
 }
 
+/* Browsers italicize <address> by default — reset since this is used
+   purely for semantics here, not a stylistic choice. */
+address {
+  font-style: normal;
+}
+
 button {
   font-family: inherit;
   cursor: pointer;
@@ -81,6 +87,21 @@ ul {
 
 .hidden {
   display: none !important;
+}
+
+/* Visually hidden but still readable by screen readers / search engine
+   crawlers — used for the page's real <h1> where the visible logo
+   already conveys the brand name graphically. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 .font-cinzel {
@@ -978,6 +999,12 @@ input[type="range"]::-moz-range-thumb {
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.product-grid > li {
+  margin: 0;
 }
 @media (min-width: 640px) {
   .product-grid { grid-template-columns: 1fr 1fr; }
@@ -1779,6 +1806,8 @@ input[type="range"]::-moz-range-thumb {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  list-style: none;
+  margin: 0;
 }
 
 .cart-empty {
