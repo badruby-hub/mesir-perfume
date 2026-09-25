@@ -285,6 +285,13 @@ function nextProductId() {
   return state.products.length ? Math.max(...state.products.map((p) => p.id)) + 1 : 1;
 }
 
+function categoryDisplayLabel(slug) {
+  if (!slug) return '—';
+  ensureCategoryLabelsShape();
+  const cl = state.labels.categoryLabels;
+  return cl.ru[slug] || cl.en[slug] || cl.hy[slug] || slug;
+}
+
 function renderProducts() {
   const tbody = document.getElementById('products-tbody');
   tbody.innerHTML = '';
@@ -301,7 +308,7 @@ function renderProducts() {
       <td>$${p.price}</td>
       <td>${p.size}</td>
       <td>${p.country}</td>
-      <td>${p.category || '—'}</td>
+      <td>${categoryDisplayLabel(p.category)}</td>
       <td><span class="status-pill ${p.availability}">${p.availability === 'in-stock' ? 'In Stock' : 'Made to Order'}</span></td>
       <td>
         <div class="row-actions">
@@ -347,7 +354,7 @@ function openProductForm(id) {
   if (product && product.category) slugs.add(product.category);
   const options = ['<option value="">— без категории —</option>'];
   [...slugs].sort().forEach((slug) => {
-    const label = cl.ru[slug] || cl.en[slug] || slug;
+    const label = cl.ru[slug] || cl.en[slug] || cl.hy[slug] || slug;
     options.push(`<option value="${escapeAttr(slug)}">${escapeAttr(label)}</option>`);
   });
   categorySelect.innerHTML = options.join('');

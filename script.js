@@ -315,7 +315,18 @@ if (productGrid) {
           categoriesInUse,
           state.filters.categories,
           toggleCategory,
-          c => (categoryLabels[currentLang] && categoryLabels[currentLang][c]) || (categoryLabels.en && categoryLabels.en[c]) || c
+          c => {
+            // Try the current language first, then fall back through
+            // whichever OTHER language actually has text filled in yet
+            // — not just English — so a category typed only in Russian
+            // doesn't show its raw internal key while viewing in EN/HY.
+            const byLang = categoryLabels[currentLang] && categoryLabels[currentLang][c];
+            if (byLang) return byLang;
+            for (const lang of ['ru', 'en', 'hy']) {
+              if (categoryLabels[lang] && categoryLabels[lang][c]) return categoryLabels[lang][c];
+            }
+            return c;
+          }
         )
       );
     }
