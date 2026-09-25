@@ -102,8 +102,8 @@ function applyStaticTranslations() {
 // Security restricts to read-only (see supabase/rls.sql). Writes still
 // only ever happen server-side, in api/admin/*, using the separate
 // service_role key that never reaches the browser.
-const SUPABASE_URL = 'https://YOUR-PROJECT.supabase.co';
-const SUPABASE_ANON_KEY = 'YOUR-ANON-OR-PUBLISHABLE-KEY';
+const SUPABASE_URL = 'xhttps://arcvxxbmhfpuilyygetv.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFyY3Z4eGJtaGZwdWlseXlnZXR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAwNzUxNzMsImV4cCI6MjEwNTY1MTE3M30.aTxa3-fIM2wHSwJEaceeOqrI7KsNbtQxNQPEh0X_Hfw';
 
 function fetchSiteDataFromSupabase() {
   return fetch(`${SUPABASE_URL}/rest/v1/site_data?select=key,value`, {
