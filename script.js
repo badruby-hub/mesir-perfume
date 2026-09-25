@@ -43,6 +43,7 @@ const state = {
     brands: [],
     sizes: [],
     countries: [],
+    categories: [],
     priceRange: [50, 600],
     availability: 'all',
   },
@@ -314,6 +315,15 @@ if (productGrid) {
         c => (countryLabels[currentLang] && countryLabels[currentLang][c]) || c
       )
     );
+    // Category options aren't a separately-curated list (unlike brands/
+    // countries) — they're computed live from whatever categories are
+    // actually assigned to products right now, so the filter can never
+    // drift out of sync with real catalog data. The admin "creates" a
+    // category simply by typing it on a product in the admin panel.
+    const categoriesInUse = [...new Set(products.map(p => p.category).filter(Boolean))].sort();
+    if (categoriesInUse.length > 0) {
+      container.appendChild(buildCheckboxSection(t('filter_category'), categoriesInUse, state.filters.categories, toggleCategory));
+    }
     container.appendChild(buildAvailabilitySection());
 
     const clearBtn = document.createElement('button');
@@ -549,11 +559,21 @@ if (productGrid) {
     renderProductGridInternal();
   }
 
+  function toggleCategory(c) {
+    const arr = state.filters.categories;
+    const idx = arr.indexOf(c);
+    if (idx > -1) arr.splice(idx, 1); else arr.push(c);
+    state.currentPage = 1;
+    renderSidebars();
+    renderProductGridInternal();
+  }
+
   function clearFilters() {
     state.currentPage = 1;
     state.filters.brands = [];
     state.filters.sizes = [];
     state.filters.countries = [];
+    state.filters.categories = [];
     state.filters.priceRange = [50, 600];
     state.filters.availability = 'all';
     state.searchQuery = '';
@@ -576,6 +596,7 @@ if (productGrid) {
       if (f.brands.length && !f.brands.includes(p.brand)) return false;
       if (f.sizes.length && !f.sizes.includes(p.size)) return false;
       if (f.countries.length && !f.countries.includes(p.country)) return false;
+      if (f.categories.length && !f.categories.includes(p.category)) return false;
       if (p.price < f.priceRange[0] || p.price > f.priceRange[1]) return false;
       if (f.availability !== 'all' && p.availability !== f.availability) return false;
       if (state.searchQuery) {

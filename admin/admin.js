@@ -298,6 +298,7 @@ function renderProducts() {
       <td>$${p.price}</td>
       <td>${p.size}</td>
       <td>${p.country}</td>
+      <td>${p.category || '—'}</td>
       <td><span class="status-pill ${p.availability}">${p.availability === 'in-stock' ? 'In Stock' : 'Made to Order'}</span></td>
       <td>
         <div class="row-actions">
@@ -331,6 +332,13 @@ function openProductForm(id) {
   document.getElementById('pf-upload-status').className = 'upload-status';
   const product = id ? state.products.find((p) => p.id === id) : null;
 
+  // Populate the category datalist from whatever categories are already
+  // in use across products, so the admin sees existing options while
+  // typing rather than accidentally creating near-duplicates.
+  const categoryList = document.getElementById('pf-category-list');
+  const categoriesInUse = [...new Set(state.products.map((p) => p.category).filter(Boolean))].sort();
+  categoryList.innerHTML = categoriesInUse.map((c) => `<option value="${escapeAttr(c)}"></option>`).join('');
+
   document.getElementById('product-modal-title').textContent = product ? 'Изменить товар' : 'Добавить товар';
   document.getElementById('pf-id').value = product ? product.id : '';
   document.getElementById('pf-brand').value = product ? product.brand : '';
@@ -339,6 +347,7 @@ function openProductForm(id) {
   document.getElementById('pf-size').value = product ? product.size : '';
   document.getElementById('pf-country').value = product ? product.country : '';
   document.getElementById('pf-availability').value = product ? product.availability : 'in-stock';
+  document.getElementById('pf-category').value = product && product.category ? product.category : '';
   document.getElementById('pf-image').value = product ? product.image : '';
   document.getElementById('pf-desc-en').value = product ? product.description.en : '';
   document.getElementById('pf-desc-ru').value = product ? product.description.ru : '';
@@ -365,6 +374,7 @@ document.getElementById('product-form').addEventListener('submit', (e) => {
     size: document.getElementById('pf-size').value.trim(),
     country: document.getElementById('pf-country').value.trim(),
     availability: document.getElementById('pf-availability').value,
+    category: document.getElementById('pf-category').value.trim(),
     image: document.getElementById('pf-image').value.trim(),
     description: {
       en: document.getElementById('pf-desc-en').value.trim(),
