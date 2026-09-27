@@ -45,6 +45,13 @@ module.exports = async (req, res) => {
     // Escape characters that break Telegram's MarkdownV2 parser.
     const esc = (s) => String(s).replace(/([_*\[\]()~`>#+\-=|{}.!\\])/g, '\\$1');
 
+    // Armenian dram formatting to match the site's display — none of the
+    // characters it produces (digits, spaces, ֏) are MarkdownV2-reserved,
+    // so this doesn't need escaping.
+    function formatAMD(amount) {
+      return `${Math.round(amount).toLocaleString('ru-RU')} ֏`;
+    }
+
     // Russian pluralization for "штука/штуки/штук".
     function pluralRu(n, one, few, many) {
       const mod10 = n % 10;
@@ -59,7 +66,7 @@ module.exports = async (req, res) => {
         const qty = i.quantity || 1;
         const lineTotal = i.price * qty;
         const qtyWord = pluralRu(qty, 'штука', 'штуки', 'штук');
-        return `• ${esc(i.brand)} ${esc(i.name)} \\(${esc(i.size)}\\)  ${esc(qty)} ${qtyWord} — общая сумма: $${esc(lineTotal)}`;
+        return `• ${esc(i.brand)} ${esc(i.name)} \\(${esc(i.size)}\\)  ${esc(qty)} ${qtyWord} — общая сумма: ${formatAMD(lineTotal)}`;
       })
       .join('\n');
 
@@ -69,7 +76,7 @@ module.exports = async (req, res) => {
       `📱 Телефон: ${esc(phone.trim())}\n` +
       `💬 Telegram: ${telegram && telegram.trim() ? esc(telegram.trim()) : '—'}\n\n` +
       `*Товары:*\n${itemsList}\n\n` +
-      `💰 *Итого:* $${esc(total)}`;
+      `💰 *Итого:* ${formatAMD(total)}`;
 
     const tgResponse = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
       method: 'POST',

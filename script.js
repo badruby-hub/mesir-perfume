@@ -35,6 +35,13 @@ function saveStorage(key, value) {
   }
 }
 
+// Armenian dram formatting — space-separated thousands, symbol after the
+// number (e.g. "144 400 ֏"), matching how AMD amounts are normally
+// written. Used everywhere a price is displayed on the site.
+function formatAMD(amount) {
+  return `${Math.round(amount).toLocaleString('ru-RU')} ֏`;
+}
+
 const state = {
   cart: loadStorage('mesir_cart', []),
   favorites: loadStorage('mesir_favorites', []),
@@ -44,7 +51,7 @@ const state = {
     sizes: [],
     countries: [],
     categories: [],
-    priceRange: [50, 600],
+    priceRange: [15000, 200000],
     availability: 'all',
   },
   hoveredProductId: null,
@@ -185,7 +192,7 @@ if (heroText && heroImageWrap) {
     heroName.textContent = slide.name;
     heroTagline.textContent = slide.tagline[currentLang] || slide.tagline.en;
     heroDescription.textContent = slide.description[currentLang] || slide.description.en;
-    heroPrice.textContent = slide.price;
+    heroPrice.textContent = formatAMD(parseInt(String(slide.price).replace(/[^0-9]/g, ''), 10) || 0);
     heroImage.src = slide.image;
     heroImage.alt = slide.name;
 
@@ -479,7 +486,7 @@ if (productGrid) {
 
     const values = document.createElement('div');
     values.className = 'price-range-values';
-    values.innerHTML = `<span class="price-label-min">$${state.filters.priceRange[0]}</span><span class="price-label-max">$${state.filters.priceRange[1]}</span>`;
+    values.innerHTML = `<span class="price-label-min">${formatAMD(state.filters.priceRange[0])}</span><span class="price-label-max">${formatAMD(state.filters.priceRange[1])}</span>`;
     section.appendChild(values);
 
     const track = document.createElement('div');
@@ -498,22 +505,22 @@ if (productGrid) {
 
     const minInput = document.createElement('input');
     minInput.type = 'range';
-    minInput.min = 50;
-    minInput.max = 600;
-    minInput.step = 10;
+    minInput.min = 15000;
+    minInput.max = 200000;
+    minInput.step = 5000;
     minInput.className = 'price-min-input';
     minInput.value = state.filters.priceRange[0];
 
     const maxInput = document.createElement('input');
     maxInput.type = 'range';
-    maxInput.min = 50;
-    maxInput.max = 600;
-    maxInput.step = 10;
+    maxInput.min = 15000;
+    maxInput.max = 200000;
+    maxInput.step = 5000;
     maxInput.className = 'price-max-input';
     maxInput.value = state.filters.priceRange[1];
 
     minInput.addEventListener('input', e => {
-      const val = Math.min(+e.target.value, state.filters.priceRange[1] - 10);
+      const val = Math.min(+e.target.value, state.filters.priceRange[1] - 5000);
       e.target.value = val;
       state.filters.priceRange[0] = val;
       state.currentPage = 1;
@@ -522,7 +529,7 @@ if (productGrid) {
     });
 
     maxInput.addEventListener('input', e => {
-      const val = Math.max(+e.target.value, state.filters.priceRange[0] + 10);
+      const val = Math.max(+e.target.value, state.filters.priceRange[0] + 5000);
       e.target.value = val;
       state.filters.priceRange[1] = val;
       state.currentPage = 1;
@@ -543,10 +550,10 @@ if (productGrid) {
     const [min, max] = state.filters.priceRange;
     document.querySelectorAll('.price-min-input').forEach(inp => { if (+inp.value !== min) inp.value = min; });
     document.querySelectorAll('.price-max-input').forEach(inp => { if (+inp.value !== max) inp.value = max; });
-    document.querySelectorAll('.price-label-min').forEach(el => { el.textContent = `$${min}`; });
-    document.querySelectorAll('.price-label-max').forEach(el => { el.textContent = `$${max}`; });
+    document.querySelectorAll('.price-label-min').forEach(el => { el.textContent = formatAMD(min); });
+    document.querySelectorAll('.price-label-max').forEach(el => { el.textContent = formatAMD(max); });
 
-    const RANGE_MIN = 50, RANGE_MAX = 600;
+    const RANGE_MIN = 15000, RANGE_MAX = 200000;
     const leftPct = ((min - RANGE_MIN) / (RANGE_MAX - RANGE_MIN)) * 100;
     const rightPct = ((max - RANGE_MIN) / (RANGE_MAX - RANGE_MIN)) * 100;
     document.querySelectorAll('.price-slider-track-fill').forEach(el => {
@@ -755,7 +762,7 @@ if (productGrid) {
     bottomRow.className = 'product-bottom-row';
 
     const priceWrap = document.createElement('div');
-    priceWrap.innerHTML = `<span class="product-price">$${product.price}</span><span class="product-size">${product.size}</span>`;
+    priceWrap.innerHTML = `<span class="product-price">${formatAMD(product.price)}</span><span class="product-size">${product.size}</span>`;
     bottomRow.appendChild(priceWrap);
 
     const addBtn = document.createElement('button');
@@ -992,7 +999,7 @@ function renderCart() {
               <span class="qty-value">${item.quantity}</span>
               <button class="qty-btn qty-plus" type="button" aria-label="Increase quantity">+</button>
             </div>
-            <p class="cart-item-price">$${item.price * item.quantity}</p>
+            <p class="cart-item-price">${formatAMD(item.price * item.quantity)}</p>
           </div>
         </div>
       `;
@@ -1008,7 +1015,7 @@ function renderCart() {
     });
 
     const total = state.cart.reduce((s, p) => s + p.price * p.quantity, 0);
-    if (cartTotalEl) cartTotalEl.textContent = `$${total}`;
+    if (cartTotalEl) cartTotalEl.textContent = formatAMD(total);
     if (cartFooterEl) cartFooterEl.classList.remove('hidden');
   }
 }
@@ -1080,7 +1087,7 @@ function renderFavoritesPanel() {
         <p class="cart-item-brand">${item.brand}</p>
         <p class="cart-item-name">${item.name}</p>
         <p class="cart-item-size">${item.size}</p>
-        <p class="cart-item-price">$${item.price}</p>
+        <p class="cart-item-price">${formatAMD(item.price)}</p>
         <div class="cart-item-actions">
           <button class="fav-remove-btn" type="button">${t('fav_remove')}</button>
           <div class="qty-stepper fav-qty-stepper ${inCart ? 'hidden' : ''}">
@@ -1155,7 +1162,7 @@ function renderOrderSummary() {
         <span class="qty-value">${item.quantity}</span>
         <button class="qty-btn qty-plus" type="button" aria-label="Increase quantity">+</button>
       </div>
-      <span class="order-summary-item-price">$${item.price * item.quantity}</span>
+      <span class="order-summary-item-price">${formatAMD(item.price * item.quantity)}</span>
     `;
     row.querySelector('.qty-minus').addEventListener('click', () => {
       updateCartQuantity(index, item.quantity - 1);
@@ -1175,7 +1182,7 @@ function renderOrderSummary() {
   const total = state.cart.reduce((s, p) => s + p.price * p.quantity, 0);
   const totalRow = document.createElement('div');
   totalRow.className = 'order-summary-total';
-  totalRow.innerHTML = `<span>${t('cart_total')}</span><span>$${total}</span>`;
+  totalRow.innerHTML = `<span>${t('cart_total')}</span><span>${formatAMD(total)}</span>`;
   orderSummaryEl.appendChild(totalRow);
 }
 

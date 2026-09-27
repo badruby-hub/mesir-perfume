@@ -1340,6 +1340,37 @@ input[type="range"]::-moz-range-thumb {
   padding: 80px 24px;
 }
 
+.legal-content {
+  max-width: 760px;
+}
+.legal-updated {
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-size: 12px;
+  font-style: italic;
+  color: rgba(245,240,232,0.45);
+  margin-bottom: 40px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(226,157,48,0.15);
+}
+.legal-content h3 {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 1.05rem;
+  color: #E29D30;
+  margin-top: 36px;
+  margin-bottom: 12px;
+}
+.legal-content h3:first-of-type {
+  margin-top: 0;
+}
+.legal-content p {
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 1.85;
+  color: rgba(245,240,232,0.75);
+  margin-bottom: 14px;
+}
+
 .about-lede {
   font-family: 'Montserrat', system-ui, sans-serif;
   font-weight: 300;
@@ -1509,6 +1540,29 @@ input[type="range"]::-moz-range-thumb {
   resize: vertical;
   min-height: 120px;
 }
+
+.form-consent-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1.5;
+  color: rgba(245,240,232,0.6);
+}
+.form-consent-row input[type="checkbox"] {
+  margin-top: 2px;
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  accent-color: #E29D30;
+  cursor: pointer;
+}
+.form-consent-row a {
+  color: #E29D30;
+  text-decoration: underline;
+}
+
 .form-submit-btn {
   align-self: flex-start;
   padding: 14px 40px;

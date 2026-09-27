@@ -305,7 +305,7 @@ function renderProducts() {
         <div class="table-product-brand">${p.brand}</div>
         <div class="table-product-name">${p.name}</div>
       </td>
-      <td>$${p.price}</td>
+      <td>${(+p.price).toLocaleString('ru-RU')} ֏</td>
       <td>${p.size}</td>
       <td>${p.country}</td>
       <td>${categoryDisplayLabel(p.category)}</td>
@@ -437,7 +437,7 @@ function renderSlides() {
     row.innerHTML = `
       <img src="${s.image}" alt="">
       <div class="slide-row-info">
-        <div class="slide-row-name">${s.name} · ${s.price}</div>
+        <div class="slide-row-name">${s.name} · ${(+String(s.price).replace(/[^0-9.]/g, '') || 0).toLocaleString('ru-RU')} ֏</div>
         <div class="slide-row-tagline">${s.tagline.en}</div>
       </div>
       <div class="row-actions">

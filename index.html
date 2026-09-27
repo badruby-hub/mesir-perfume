@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MESIR — Perfume</title>
-<link rel="icon" type="image/png" href="/assets/logo.png">
+<title>MESIR — Perfume &amp; Home Fragrance</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;900&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap">
 <link rel="preconnect" href="https://YOUR-PROJECT.supabase.co">
@@ -122,7 +121,7 @@
           <div id="hero-notes" class="hero-notes"></div>
 
           <div class="hero-cta-row">
-            <span id="hero-price" class="hero-price">$380</span>
+            <span id="hero-price" class="hero-price">144 400 ֏</span>
             <button id="hero-discover-btn" class="btn-outline-gold" data-i18n="add_to_cart">Add to Cart</button>
           </div>
         </div>
@@ -283,9 +282,9 @@
         <div class="footer-col-underline"></div>
         <ul class="footer-link-list">
           <li><a href="#" class="footer-link" data-i18n="footer_shipping">Shipping</a></li>
-          <li><a href="#" class="footer-link" data-i18n="footer_returns">Returns</a></li>
+          <li><a href="returns.html" class="footer-link" data-i18n="footer_returns">Returns & Exchanges</a></li>
           <li><a href="#" class="footer-link" data-i18n="footer_faq">FAQ</a></li>
-          <li><a href="#" class="footer-link" data-i18n="footer_privacy">Privacy Policy</a></li>
+          <li><a href="privacy.html" class="footer-link" data-i18n="footer_privacy">Privacy Policy</a></li>
         </ul>
       </div>
 
@@ -350,7 +349,7 @@
     <div id="cart-footer" class="cart-footer hidden">
       <div class="cart-total-row">
         <span data-i18n="cart_total">Total</span>
-        <span id="cart-total">$0</span>
+        <span id="cart-total">0 ֏</span>
       </div>
       <button id="checkout-btn" class="checkout-btn" data-i18n="checkout_btn">Checkout</button>
     </div>
@@ -404,6 +403,11 @@
         <label class="form-label" for="order-phone" data-i18n="order_phone_label">Phone</label>
         <input class="form-input" type="tel" id="order-phone" name="phone" data-i18n-placeholder="order_phone_placeholder" placeholder="+1 234 567 8900" required>
       </div>
+
+      <label class="form-consent-row">
+        <input type="checkbox" id="order-consent" required>
+        <span data-i18n-html="order_consent_text">I agree to the processing of my personal data as described in the <a href="privacy.html" target="_blank">Privacy Policy</a>.</span>
+      </label>
 
       <button type="submit" id="order-submit-btn" class="form-submit-btn" data-i18n="order_submit_btn">Submit Request</button>
     </form>

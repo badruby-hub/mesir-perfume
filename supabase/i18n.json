@@ -93,7 +93,8 @@
     "form_success_note": "Thank you — your message has been noted. We'll be in touch shortly.",
     "go_to_cart": "Go to Cart",
     "toast_added_to_cart": "Added to cart",
-    "toast_added_to_favorites": "Added to favorites"
+    "toast_added_to_favorites": "Added to favorites",
+    "filter_category": "Category"
   },
   "ru": {
     "nav_catalog": "Каталог",
@@ -189,6 +190,7 @@
     "form_success_note": "Спасибо — ваше сообщение принято. Мы свяжемся с вами в ближайшее время.",
     "go_to_cart": "Перейти в корзину",
     "toast_added_to_cart": "Добавлено в корзину",
-    "toast_added_to_favorites": "Добавлено в избранное"
+    "toast_added_to_favorites": "Добавлено в избранное",
+    "filter_category": "Категория"
   }
 }

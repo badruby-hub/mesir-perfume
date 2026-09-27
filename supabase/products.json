@@ -15,7 +15,8 @@
     "notes": {
       "en": "Oud · Rosewood · Amber",
       "ru": "Уд · Розовое дерево · Амбра"
-    }
+    },
+    "category": ""
   },
   {
     "id": 2,
@@ -33,7 +34,8 @@
     "notes": {
       "en": "Pineapple · Birch · Musk",
       "ru": "Ананас · Берёза · Мускус"
-    }
+    },
+    "category": ""
   },
   {
     "id": 3,
@@ -51,7 +53,8 @@
     "notes": {
       "en": "Oregano · Frankincense · Oud",
       "ru": "Орегано · Ладан · Уд"
-    }
+    },
+    "category": ""
   },
   {
     "id": 4,
@@ -69,7 +72,8 @@
     "notes": {
       "en": "Aldehydes · Rose · Sandalwood",
       "ru": "Альдегиды · Роза · Сандал"
-    }
+    },
+    "category": ""
   },
   {
     "id": 5,
@@ -87,7 +91,8 @@
     "notes": {
       "en": "Jasmine · Amberwood · Fir",
       "ru": "Жасмин · Амбровое дерево · Пихта"
-    }
+    },
+    "category": ""
   },
   {
     "id": 6,
@@ -105,7 +110,8 @@
     "notes": {
       "en": "Spices · Elemi · Amber",
       "ru": "Специи · Элеми · Амбра"
-    }
+    },
+    "category": ""
   },
   {
     "id": 7,
@@ -123,7 +129,8 @@
     "notes": {
       "en": "Black Orchid · Truffle · Patchouli",
       "ru": "Чёрная орхидея · Трюфель · Пачули"
-    }
+    },
+    "category": ""
   },
   {
     "id": 8,
@@ -141,7 +148,8 @@
     "notes": {
       "en": "Green Tea · Bergamot · Sandalwood",
       "ru": "Зелёный чай · Бергамот · Сандал"
-    }
+    },
+    "category": ""
   },
   {
     "id": 9,
@@ -159,6 +167,7 @@
     "notes": {
       "en": "Neroli · Ylang-ylang · Iris",
       "ru": "Нероли · Иланг-иланг · Ирис"
-    }
+    },
+    "category": ""
   }
 ]
