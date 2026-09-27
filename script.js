@@ -650,7 +650,7 @@ if (productGrid) {
     state.filters.sizes = [];
     state.filters.countries = [];
     state.filters.categories = [];
-    state.filters.priceRange = [50, 600];
+    state.filters.priceRange = [15000, 200000];
     state.filters.availability = 'all';
     state.searchQuery = '';
     if (searchInput) searchInput.value = '';
