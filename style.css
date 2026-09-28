@@ -2556,6 +2556,12 @@ input[type="range"]::-moz-range-thumb {
   transform: none;
 }
 
+/* Fade only, no slide — for elements at the very bottom of the page. */
+.reveal.reveal-fade {
+  transform: none;
+  transition: opacity 1.2s ease;
+}
+
 /* Section header ornament lines draw outward once revealed. */
 .section-header.reveal .ornament-line-fade-right,
 .section-header.reveal .ornament-line-fade-left {
