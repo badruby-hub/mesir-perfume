@@ -24,7 +24,11 @@
       entry.target.classList.add('is-visible');
       observer.unobserve(entry.target);
     });
-  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  // threshold 0, not a percentage: on phones the catalog is several
+  // screens tall, so a ratio like 0.15 can never be reached and the
+  // catalog would stay invisible. The negative bottom margin still
+  // waits until the element is a little way into the viewport.
+  }, { threshold: 0, rootMargin: '0px 0px -10% 0px' });
 
   groups.forEach(([selector, step]) => {
     document.querySelectorAll(selector).forEach((el, i) => {
