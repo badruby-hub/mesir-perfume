@@ -1,6 +1,6 @@
 // =======================================================
 // STATE (cart & favorites persisted in localStorage so they
-// survive navigation between index.html / about.html / contact.html.
+// survive navigation between the site's pages (/, /about, /contact).
 // Language state & t()/currentLang come from i18n.js, loaded first.)
 // =======================================================
 
@@ -145,7 +145,7 @@ if (searchInput) {
       if (document.getElementById('catalog')) {
         document.getElementById('catalog').scrollIntoView({ behavior: 'smooth' });
       } else {
-        window.location.href = 'index.html#catalog';
+        window.location.href = '/#catalog';
       }
     }
   });
