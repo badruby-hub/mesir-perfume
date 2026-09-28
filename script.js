@@ -74,6 +74,7 @@ function onLanguageChange() {
   if (typeof renderSidebars === 'function') renderSidebars();
   if (typeof renderProductGridInternal === 'function') renderProductGridInternal();
   if (typeof renderHeroContent === 'function') renderHeroContent();
+  if (typeof renderTestimonials === 'function') renderTestimonials();
   renderCart();
   renderFavoritesPanel();
 }
@@ -792,6 +793,11 @@ if (productGrid) {
     const startIdx = (state.currentPage - 1) * PRODUCTS_PER_PAGE;
     const pageItems = filtered.slice(startIdx, startIdx + PRODUCTS_PER_PAGE);
 
+    // Only cards that weren't already on screen get the entrance
+    // animation, so re-renders from a favorite toggle, price-slider drag
+    // or language switch don't replay it on every card.
+    const previousIds = new Set(Array.from(productGrid.children, li => li.dataset.productId));
+
     productGrid.innerHTML = '';
     if (filtered.length === 0) {
       productGrid.classList.add('hidden');
@@ -799,8 +805,14 @@ if (productGrid) {
     } else {
       productGrid.classList.remove('hidden');
       if (noResultsEl) noResultsEl.classList.add('hidden');
+      let enterIndex = 0;
       pageItems.forEach(p => {
         const li = document.createElement('li');
+        li.dataset.productId = p.id;
+        if (!previousIds.has(String(p.id))) {
+          li.className = 'card-enter';
+          li.style.animationDelay = (Math.min(enterIndex++, 9) * 0.06) + 's';
+        }
         li.appendChild(buildProductCard(p));
         productGrid.appendChild(li);
       });

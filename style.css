@@ -2401,3 +2401,307 @@ input[type="range"]::-moz-range-thumb {
     transform: translateY(0);
   }
 }
+/* ==================== TESTIMONIALS ==================== */
+#testimonials {
+  position: relative;
+  padding: 96px 0;
+  background: linear-gradient(180deg, #2d0000 0%, #390000 100%);
+  overflow: hidden;
+}
+
+.testimonials-columns {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  max-width: 1080px;
+  height: 640px;
+  margin: 0 auto;
+  padding: 0 24px;
+  overflow: hidden;
+  /* Fade cards in and out at the top and bottom edges. */
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+}
+
+.testimonials-column {
+  flex: 1 1 0;
+  max-width: 340px;
+  min-width: 0;
+}
+
+/* Only one column on phones, two on tablets, all three on desktop. */
+.testimonials-column:nth-child(n+2) {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .testimonials-column:nth-child(2) {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .testimonials-column:nth-child(3) {
+    display: block;
+  }
+}
+
+/* The track holds two copies of the column's cards. Sliding it up by
+   exactly half its height lands copy two where copy one started, so
+   the loop has no visible jump. Duration is set per column in JS.
+   Each card carries its own bottom margin (not flex gap) so both
+   halves are exactly the same height. */
+.testimonials-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  animation: testimonials-scroll 40s linear infinite;
+}
+
+.testimonials-columns:hover .testimonials-track {
+  animation-play-state: paused;
+}
+
+@keyframes testimonials-scroll {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+.testimonial-card {
+  position: relative;
+  margin-bottom: 24px;
+  padding: 28px 24px;
+  background: rgba(45, 0, 0, 0.7);
+  border: 1px solid rgba(226, 157, 48, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.testimonial-card:hover {
+  background: rgba(74, 0, 0, 0.9);
+  border-color: rgba(226, 157, 48, 0.6);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(226, 157, 48, 0.08);
+}
+
+.testimonial-stars {
+  margin-bottom: 14px;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  color: #E29D30;
+}
+
+.testimonial-text {
+  margin: 0 0 22px;
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(245, 240, 232, 0.8);
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(226, 157, 48, 0.15);
+}
+
+.testimonial-avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(226, 157, 48, 0.5);
+  border-radius: 50%;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 13px;
+  color: #E29D30;
+  background: rgba(226, 157, 48, 0.08);
+}
+
+.testimonial-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  color: #f5f0e8;
+}
+
+.testimonial-city {
+  margin-top: 2px;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(226, 157, 48, 0.6);
+}
+
+/* ==================== EXTRA ANIMATIONS ==================== */
+
+/* Scroll reveal — the .reveal class is added by animations.js. */
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Section header ornament lines draw outward once revealed. */
+.section-header.reveal .ornament-line-fade-right,
+.section-header.reveal .ornament-line-fade-left {
+  transform: scaleX(0);
+  transition: transform 1s ease 0.3s;
+}
+
+.section-header.reveal .ornament-line-fade-right {
+  transform-origin: right;
+}
+
+.section-header.reveal .ornament-line-fade-left {
+  transform-origin: left;
+}
+
+.section-header.reveal.is-visible .ornament-line-fade-right,
+.section-header.reveal.is-visible .ornament-line-fade-left {
+  transform: scaleX(1);
+}
+
+/* Product cards rise in one after another when they first appear
+   (first load, filter change, page change). The .card-enter class and
+   stagger delay are set in renderProductGridInternal(). Animates the
+   <li>, not the card, so the card's own hover transform keeps working. */
+@keyframes card-rise {
+  from {
+    opacity: 0;
+    transform: translateY(28px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.product-grid>li.card-enter {
+  animation: card-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Hero: rings breathe, glow behind the bottle pulses. */
+@keyframes ring-breathe {
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.hero-arc circle {
+  animation: ring-breathe 6s ease-in-out infinite;
+}
+
+.hero-arc circle:nth-child(2) {
+  animation-delay: 1s;
+}
+
+.hero-arc circle:nth-child(3) {
+  animation-delay: 2s;
+}
+
+@keyframes glow-pulse {
+
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(0.6);
+  }
+
+  50% {
+    opacity: 0.28;
+    transform: scale(0.7);
+  }
+}
+
+.hero-glow {
+  animation: glow-pulse 5s ease-in-out infinite;
+}
+
+/* Gold lines: a light sweep runs across the header and footer lines. */
+@keyframes gold-sweep {
+  from {
+    background-position: -200% 0;
+  }
+
+  to {
+    background-position: 200% 0;
+  }
+}
+
+.gold-topline,
+.gold-topline-shimmer {
+  background-size: 200% 100%;
+  animation: gold-sweep 6s linear infinite;
+}
+
+/* Footer diamonds twinkle in sequence. */
+@keyframes diamond-twinkle {
+
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.ornament-diamond {
+  animation: diamond-twinkle 3s ease-in-out infinite;
+}
+
+.ornament-diamond:nth-child(4) {
+  animation-delay: 0.5s;
+}
+
+.ornament-diamond:nth-child(6) {
+  animation-delay: 1s;
+}
+
+/* Buttons: soft gold glow on hover. */
+.btn-outline-gold:hover,
+.add-to-cart-btn:hover,
+.checkout-btn:hover {
+  box-shadow: 0 0 24px rgba(226, 157, 48, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+  .testimonials-track,
+  .product-grid>li.card-enter,
+  .hero-arc circle,
+  .hero-glow,
+  .gold-topline,
+  .gold-topline-shimmer,
+  .ornament-diamond {
+    animation: none;
+  }
+
+  /* Without the scroll animation, let visitors scroll the reviews by hand. */
+  .testimonials-columns {
+    overflow-y: auto;
+  }
+}
