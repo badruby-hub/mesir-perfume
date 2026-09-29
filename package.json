@@ -1,9 +1,25 @@
 {
   "name": "mesir-perfume-site",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "private": true,
-  "description": "MESIR Perfume & Home Fragrance — static site with a Vercel serverless function for order requests via Telegram.",
+  "description": "MESIR Perfume & Home Fragrance — Next.js site with a Supabase-backed admin panel and order/help requests via Telegram.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "typecheck": "tsc --noEmit"
+  },
   "dependencies": {
-    "motion": "^13.4.4"
+    "framer-motion": "^13.4.5",
+    "next": "^16.3.7",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "^7.0.2"
   }
 }

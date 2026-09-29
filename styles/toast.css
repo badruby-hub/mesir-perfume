@@ -1,0 +1,36 @@
+/* ==================== TOAST NOTIFICATIONS ==================== */
+/* The outer layer only positions the toast; the inner .mesir-toast-body
+   is animated by framer-motion (components/cart/Toast.tsx), so its
+   transform is never fought over with a CSS centering transform. */
+.mesir-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 300;
+}
+
+.mesir-toast-body {
+  background: #E29D30;
+  color: #390000;
+  padding: 13px 28px;
+  border-radius: 3px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .mesir-toast-body {
+    width: 100%;
+    text-align: center;
+    white-space: normal;
+  }
+}

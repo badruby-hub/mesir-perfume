@@ -1,0 +1,187 @@
+/* ==================== RESET & BASE ==================== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  height: 100%;
+}
+
+body {
+  font-family: 'Montserrat', system-ui, sans-serif;
+  background-color: #390000;
+  color: #f5f0e8;
+  -webkit-font-smoothing: antialiased;
+  height: 100%;
+}
+
+/* Sticky-footer pattern: .wrapper is a full-height flex column around
+   header+main+footer, and main grows to fill any leftover vertical
+   space — so the footer sits at the bottom of the viewport whenever
+   total page content is shorter than the screen (e.g. About/Contact
+   on a tall monitor). Note: this alone does NOT fix the catalog
+   "jumping" when filtered to zero results — the hero section alone is
+   already 100vh, so total content already exceeds one viewport and
+   this flex-grow never gets extra space to distribute in that case.
+   That specific issue is handled separately below, by reserving a
+   fixed min-height on .catalog-results-area per breakpoint. */
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+main {
+  flex-grow: 1;
+}
+
+/* Gray "skeleton" placeholder shown behind every <img> until its photo
+   has actually painted over it — covers the loading gap AND doubles as
+   a fallback for a broken/slow image link, with no JS needed: the
+   background is simply invisible once an opaque photo loads on top.
+   A plain uniform brightness pulse (not a moving gradient) so nothing
+   ever appears to shift or narrow. */
+@keyframes img-pulse {
+
+  0%,
+  100% {
+    background-color: #2b2b2b;
+  }
+
+  50% {
+    background-color: #3d3d3d;
+  }
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  background-color: #2b2b2b;
+  animation: img-pulse 1.8s ease-in-out infinite;
+  /* Hides the browser's native "loading/broken image" icon + alt text —
+     both are rendered using the element's text color and font, so this
+     makes them invisible in every browser while the gray background
+     above stays untouched (it's a separate property). Applies equally
+     whether the image is still downloading or has genuinely failed. */
+  color: transparent;
+  font-size: 0;
+  text-indent: -9999px;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Browsers italicize <address> by default — reset since this is used
+   purely for semantics here, not a stylistic choice. */
+address {
+  font-style: normal;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: inherit;
+}
+
+ul {
+  list-style: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Visually hidden but still readable by screen readers / search engine
+   crawlers — used for the page's real <h1> where the visible logo
+   already conveys the brand name graphically. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.font-cinzel {
+  font-family: 'Cinzel', Georgia, serif;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #200000;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #E29D30;
+  border-radius: 3px;
+}
+
+/* ==================== SHARED ELEMENTS ==================== */
+.corner-ornament {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.corner-ornament.tl {
+  top: -16px;
+  left: -16px;
+  border-top: 1px solid rgba(226, 157, 48, 0.5);
+  border-left: 1px solid rgba(226, 157, 48, 0.5);
+}
+
+.corner-ornament.tr {
+  top: -16px;
+  right: -16px;
+  border-top: 1px solid rgba(226, 157, 48, 0.5);
+  border-right: 1px solid rgba(226, 157, 48, 0.5);
+}
+
+.corner-ornament.bl {
+  bottom: -16px;
+  left: -16px;
+  border-bottom: 1px solid rgba(226, 157, 48, 0.5);
+  border-left: 1px solid rgba(226, 157, 48, 0.5);
+}
+
+.corner-ornament.br {
+  bottom: -16px;
+  right: -16px;
+  border-bottom: 1px solid rgba(226, 157, 48, 0.5);
+  border-right: 1px solid rgba(226, 157, 48, 0.5);
+}
+
+.btn-outline-gold {
+  position: relative;
+  padding: 12px 32px;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  border: 1px solid #E29D30;
+  color: #E29D30;
+  background: transparent;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+  background: #E29D30;
+  color: #390000;
+}
+

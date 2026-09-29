@@ -1,0 +1,141 @@
+/* ==================== TESTIMONIALS ==================== */
+#testimonials {
+  position: relative;
+  padding: 96px 0;
+  background: linear-gradient(180deg, #2d0000 0%, #390000 100%);
+  overflow: hidden;
+}
+
+.testimonials-columns {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  max-width: 1080px;
+  height: 640px;
+  margin: 0 auto;
+  padding: 0 24px;
+  overflow: hidden;
+  /* Fade cards in and out at the top and bottom edges. */
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+  mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+}
+
+.testimonials-column {
+  flex: 1 1 0;
+  max-width: 340px;
+  min-width: 0;
+}
+
+/* Only one column on phones, two on tablets, all three on desktop. */
+.testimonials-column:nth-child(n+2) {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .testimonials-column:nth-child(2) {
+    display: block;
+  }
+}
+
+@media (min-width: 1024px) {
+  .testimonials-column:nth-child(3) {
+    display: block;
+  }
+}
+
+/* The track holds two copies of the column's cards. Sliding it up by
+   exactly half its height lands copy two where copy one started, so
+   the loop has no visible jump. Duration is set per column in JS.
+   Each card carries its own bottom margin (not flex gap) so both
+   halves are exactly the same height. */
+.testimonials-track {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  animation: testimonials-scroll 40s linear infinite;
+}
+
+.testimonials-columns:hover .testimonials-track {
+  animation-play-state: paused;
+}
+
+@keyframes testimonials-scroll {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+.testimonial-card {
+  position: relative;
+  margin-bottom: 24px;
+  padding: 28px 24px;
+  background: rgba(45, 0, 0, 0.7);
+  border: 1px solid rgba(226, 157, 48, 0.2);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.testimonial-card:hover {
+  background: rgba(74, 0, 0, 0.9);
+  border-color: rgba(226, 157, 48, 0.6);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 30px rgba(226, 157, 48, 0.08);
+}
+
+.testimonial-stars {
+  margin-bottom: 14px;
+  font-size: 12px;
+  letter-spacing: 0.25em;
+  color: #E29D30;
+}
+
+.testimonial-text {
+  margin: 0 0 22px;
+  font-family: 'Montserrat', system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.7;
+  color: rgba(245, 240, 232, 0.8);
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(226, 157, 48, 0.15);
+}
+
+.testimonial-avatar {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(226, 157, 48, 0.5);
+  border-radius: 50%;
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 13px;
+  color: #E29D30;
+  background: rgba(226, 157, 48, 0.08);
+}
+
+.testimonial-name {
+  font-family: 'Cinzel', Georgia, serif;
+  font-size: 14px;
+  letter-spacing: 0.05em;
+  color: #f5f0e8;
+}
+
+.testimonial-city {
+  margin-top: 2px;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(226, 157, 48, 0.6);
+}
+
