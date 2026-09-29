@@ -10,7 +10,7 @@ import { useSiteData } from '@/components/providers/SiteDataProvider';
 import SectionHeader from '@/components/layout/SectionHeader';
 import Reveal, { EASE_OUT } from '@/components/motion/Reveal';
 import { itemsCountLabel } from '@/lib/i18n';
-import FilterSidebar, { EMPTY_FILTERS, type CatalogFilters } from './FilterSidebar';
+import FilterSidebar, { EMPTY_FILTERS, type CatalogFilters, type CollapsibleSection } from './FilterSidebar';
 import Pagination from './Pagination';
 import ProductCard from './ProductCard';
 
@@ -24,7 +24,8 @@ export default function Catalog() {
   const [filters, setFilters] = useState<CatalogFilters>(EMPTY_FILTERS);
   const [currentPage, setCurrentPage] = useState(1);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
-  const [categoryOpen, setCategoryOpen] = useState(false);
+  const [openSections, setOpenSections] = useState<Partial<Record<CollapsibleSection, boolean>>>({});
+  const toggleSection = (id: CollapsibleSection) => setOpenSections((s) => ({ ...s, [id]: !s[id] }));
 
   // Any change to what's being filtered goes back to page 1.
   useEffect(() => setCurrentPage(1), [searchQuery]);
@@ -75,8 +76,8 @@ export default function Catalog() {
     onToggle: toggleInList,
     onChange: updateFilters,
     onClear: clearFilters,
-    categoryOpen,
-    onCategoryOpenChange: setCategoryOpen,
+    openSections,
+    onSectionToggle: toggleSection,
   };
   const countLabel = itemsCountLabel(filtered.length, lang);
 

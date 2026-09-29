@@ -2,6 +2,8 @@
 
 // Filter sidebar. Rendered twice by the catalog (desktop sidebar and
 // mobile drawer); both copies read and write the same filter state.
+import { AnimatePresence, motion } from 'framer-motion';
+import type { ReactNode } from 'react';
 import { useI18n } from '@/components/providers/I18nProvider';
 import { useSiteData } from '@/components/providers/SiteDataProvider';
 import { CaretDownIcon, CheckIcon } from '@/components/layout/icons';
@@ -32,13 +34,59 @@ export const EMPTY_FILTERS: CatalogFilters = {
 
 type ListKey = 'brands' | 'sizes' | 'countries' | 'categories';
 
+// Filter groups that fold behind a clickable header (accordion).
+export type CollapsibleSection = ListKey;
+
 interface Props {
   filters: CatalogFilters;
   onToggle: (key: ListKey, value: string) => void;
   onChange: (patch: Partial<CatalogFilters>) => void;
   onClear: () => void;
-  categoryOpen: boolean;
-  onCategoryOpenChange: (open: boolean) => void;
+  // Which accordion sections are open. Kept by the catalog, so it is
+  // shared by the desktop and mobile copies of the sidebar.
+  openSections: Partial<Record<CollapsibleSection, boolean>>;
+  onSectionToggle: (section: CollapsibleSection) => void;
+}
+
+// A filter group that collapses behind its header. The header shows how
+// many options are selected, so a closed group never hides active filters.
+function Collapsible({
+  title,
+  open,
+  selectedCount,
+  onToggle,
+  children,
+}: {
+  title: string;
+  open: boolean;
+  selectedCount: number;
+  onToggle: () => void;
+  children: ReactNode;
+}) {
+  return (
+    <div className={'filter-section filter-section-collapsible' + (open ? ' open' : '')}>
+      <button type="button" className="filter-section-title filter-section-toggle" aria-expanded={open} onClick={onToggle}>
+        <span>
+          {title}
+          {selectedCount > 0 && <span className="filter-section-count">{selectedCount}</span>}
+        </span>
+        <CaretDownIcon className="filter-caret" />
+      </button>
+      <AnimatePresence initial={false}>
+        {open && (
+          <motion.div
+            className="filter-section-body"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+          >
+            {children}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 }
 
 function CheckboxItems({
@@ -46,16 +94,14 @@ function CheckboxItems({
   selected,
   onToggle,
   labelFn,
-  hidden = false,
 }: {
   items: string[];
   selected: string[];
   onToggle: (item: string) => void;
   labelFn?: (item: string) => string;
-  hidden?: boolean;
 }) {
   return (
-    <div className={'filter-section-items' + (hidden ? ' hidden' : '')}>
+    <div className="filter-section-items">
       {items.map((item) => {
         const checked = selected.includes(item);
         return (
@@ -69,7 +115,7 @@ function CheckboxItems({
   );
 }
 
-export default function FilterSidebar({ filters, onToggle, onChange, onClear, categoryOpen, onCategoryOpenChange }: Props) {
+export default function FilterSidebar({ filters, onToggle, onChange, onClear, openSections, onSectionToggle }: Props) {
   const { t, lang, labels } = useI18n();
   const { products, filters: lists } = useSiteData();
   const { countryLabels, availabilityLabels, categoryLabels } = labels;
@@ -89,6 +135,12 @@ export default function FilterSidebar({ filters, onToggle, onChange, onClear, ca
     return c;
   };
 
+  const section = (id: CollapsibleSection) => ({
+    open: !!openSections[id],
+    selectedCount: filters[id].length,
+    onToggle: () => onSectionToggle(id),
+  });
+
   const [min, max] = filters.priceRange;
   const leftPct = ((min - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * 100;
   const rightPct = ((max - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * 100;
@@ -107,28 +159,21 @@ export default function FilterSidebar({ filters, onToggle, onChange, onClear, ca
       </div>
 
       {categoriesInUse.length > 0 && (
-        <div className={'filter-section filter-section-collapsible' + (categoryOpen ? ' open' : '')}>
-          <button type="button" className="filter-section-title filter-section-toggle" onClick={() => onCategoryOpenChange(!categoryOpen)}>
-            <span>{t('filter_category', 'Category')}</span>
-            <CaretDownIcon className="filter-caret" />
-          </button>
+        <Collapsible title={t('filter_category', 'Category')} {...section('categories')}>
           <CheckboxItems
             items={categoriesInUse}
             selected={filters.categories}
             onToggle={(c) => onToggle('categories', c)}
             labelFn={categoryLabel}
-            hidden={!categoryOpen}
           />
-        </div>
+        </Collapsible>
       )}
 
-      <div className="filter-section">
-        <h3 className="filter-section-title">{t('filter_brand', 'Brand')}</h3>
+      <Collapsible title={t('filter_brand', 'Brand')} {...section('brands')}>
         <CheckboxItems items={lists.brands} selected={filters.brands} onToggle={(b) => onToggle('brands', b)} />
-      </div>
+      </Collapsible>
 
-      <div className="filter-section">
-        <h3 className="filter-section-title">{t('filter_size', 'Size')}</h3>
+      <Collapsible title={t('filter_size', 'Size')} {...section('sizes')}>
         <div className="size-pill-row">
           {lists.sizes.map((s) => (
             <button key={s} className={'size-pill' + (filters.sizes.includes(s) ? ' active' : '')} onClick={() => onToggle('sizes', s)}>
@@ -136,7 +181,7 @@ export default function FilterSidebar({ filters, onToggle, onChange, onClear, ca
             </button>
           ))}
         </div>
-      </div>
+      </Collapsible>
 
       <div className="filter-section">
         <h3 className="filter-section-title">{t('filter_price', 'Price')}</h3>
@@ -170,15 +215,14 @@ export default function FilterSidebar({ filters, onToggle, onChange, onClear, ca
         </div>
       </div>
 
-      <div className="filter-section">
-        <h3 className="filter-section-title">{t('filter_country', 'Country')}</h3>
+      <Collapsible title={t('filter_country', 'Country')} {...section('countries')}>
         <CheckboxItems
           items={lists.countries}
           selected={filters.countries}
           onToggle={(c) => onToggle('countries', c)}
           labelFn={(c) => countryLabels[lang]?.[c] || c}
         />
-      </div>
+      </Collapsible>
 
       <div className="filter-section">
         <h3 className="filter-section-title">{t('filter_availability', 'Availability')}</h3>

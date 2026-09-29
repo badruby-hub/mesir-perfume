@@ -173,8 +173,9 @@
   color: rgba(226, 157, 48, 0.6);
 }
 
-/* Collapsible variant (category filter) — the title becomes a clickable
-   toggle button with a caret, matching the language-switcher pattern. */
+/* Collapsible variant (category, brand, size, country) — the title
+   becomes a clickable toggle button with a caret, matching the
+   language-switcher pattern. */
 .filter-section-toggle {
   display: flex;
   align-items: center;
@@ -192,6 +193,40 @@
 
 .filter-section-collapsible.open .filter-caret {
   transform: rotate(180deg);
+}
+
+/* Wrapper animated open/closed by framer-motion (height). overflow hidden
+   clips the content while the height changes. The section's usual 12px
+   gap moves inside it as padding, so the space grows with the animation
+   instead of appearing at once. */
+.filter-section-collapsible {
+  gap: 0;
+}
+
+.filter-section-body {
+  overflow: hidden;
+}
+
+.filter-section-body > :first-child {
+  padding-top: 12px;
+}
+
+/* Number of selected options, shown next to a group's title. */
+.filter-section-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 8px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: #E29D30;
+  color: #390000;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0;
+  vertical-align: middle;
 }
 
 .filter-section-items {
