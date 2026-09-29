@@ -1190,13 +1190,7 @@ input[type="range"]::-moz-range-thumb {
 .catalog-results-area {
   display: flex;
   flex-direction: column;
-  /* Reserves enough height for the FULLY populated grid (all 9 products)
-     at each breakpoint, so filtering down to fewer — or zero — results
-     never shrinks this area and moves the footer up. Values are tuned
-     per breakpoint because the responsive image aspect-ratio makes card
-     height (and therefore total grid height) vary with viewport width. */
-  min-height: 7400px;
-  /* single column: worst case is the widest mobile view before 2-col kicks in */
+  /* min-height: 7400px; */
 }
 
 @media (min-width: 640px) and (max-width: 767px) {
